@@ -64,8 +64,8 @@ export function replace(file, { module, source }) {
       }
       throw new Error(`${source}: "${spec}" is not in the bundle; rebuild instead`);
     };
-    for (const table of ['statements', 'bindings', 'refs', 'exports']) {
-      db.prepare(`DELETE FROM ${table} WHERE ${table === 'statements' || table === 'exports' ? 'module_id' : 'module_id'} = ?`).run(id);
+    for (const table of ['statements', 'bindings', 'refs', 'relocations', 'exports']) {
+      db.prepare(`DELETE FROM ${table} WHERE module_id = ?`).run(id);
     }
     db.prepare('DELETE FROM dependencies WHERE importer_id = ?').run(id);
     db.prepare('UPDATE modules SET format = ? WHERE id = ?').run(t.format, id);
@@ -74,7 +74,11 @@ export function replace(file, { module, source }) {
       db.prepare('INSERT INTO statements VALUES (?, ?, ?, ?)').run(id, idx, s.code, s.pure ? 1 : 0);
       for (const n of s.declares) db.prepare('INSERT OR IGNORE INTO bindings VALUES (?, ?, ?)').run(id, n, idx);
       for (const r of s.refs) db.prepare('INSERT INTO refs VALUES (?, ?, ?, ?, ?)').run(id, idx, r.kind, r.name, r.dep ?? null);
+      for (const r of s.relocations) {
+        db.prepare('INSERT INTO relocations VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)').run(id, idx, r.start, r.end, r.kind, r.name, r.dep ?? null, r.form, r.local ?? null);
+      }
     });
+    for (const n of [...t.globals, ...t.innerNames]) db.prepare('INSERT OR IGNORE INTO reserved_names VALUES (?)').run(n);
     for (const e of t.exports) {
       db.prepare('INSERT INTO exports VALUES (?, ?, ?, ?, ?, ?)').run(id, e.name, e.kind, e.local ?? null, e.dep ?? null, e.imported ?? null);
     }

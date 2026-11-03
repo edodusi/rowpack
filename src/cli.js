@@ -10,7 +10,7 @@ const USAGE = `rowpack: a JavaScript bundler whose output is a SQLite database
 
   rowpack build <entry.js> -o <bundle.sqlite> [--js <out.js>] [--html <out.html>] [--fast-html <out.html>] [--no-tree-shake]
   rowpack run <bundle.sqlite | bundle.js>
-  rowpack emit <bundle.sqlite> -o <out.js>
+  rowpack emit <bundle.sqlite> -o <out.js> [--engine static|dynamic]
   rowpack shake <bundle.sqlite>
   rowpack patch <bundle.sqlite> --redirect <specifier>=<module> [--importer <module>]
   rowpack patch <bundle.sqlite> --replace <module> <file.js>
@@ -44,7 +44,7 @@ export function main(argv) {
       const { stats, warnings } = build({ entry: target, out: f.out, treeShake: f['tree-shake'] !== false });
       for (const w of warnings) console.error(`warning: ${w}`);
       if (f.js || f['fast-html']) {
-        const js = materialize(f.out);
+        const js = materialize(f.out, { engine: f.engine || 'static', onFallback: (why) => console.error(`note: dynamic runtime used: ${why}`) });
         if (f.js) fs.writeFileSync(f.js, js);
         if (f['fast-html']) fs.writeFileSync(f['fast-html'], fastPage(js, path.basename(target)));
       }
@@ -65,7 +65,7 @@ export function main(argv) {
       return;
     }
     case 'emit': {
-      fs.writeFileSync(f.out, materialize(target));
+      fs.writeFileSync(f.out, materialize(target, { engine: f.engine || 'static', onFallback: (why) => console.error(`note: dynamic runtime used: ${why}`) }));
       return;
     }
     case 'shake':

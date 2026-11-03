@@ -88,6 +88,34 @@ function resolveBare(specifier, fromDir) {
   }
 }
 
+const pkgCache = new Map();
+
+/**
+ * Does this file have side effects, according to the nearest package.json's
+ * "sideEffects" field? (true unless the package says otherwise)
+ */
+export function hasSideEffects(file) {
+  for (let dir = path.dirname(file); ; dir = path.dirname(dir)) {
+    let pkg = pkgCache.get(dir);
+    if (pkg === undefined) {
+      const p = path.join(dir, 'package.json');
+      pkg = isFile(p) ? JSON.parse(fs.readFileSync(p, 'utf8')) : null;
+      pkgCache.set(dir, pkg);
+    }
+    if (pkg && 'sideEffects' in pkg) {
+      const se = pkg.sideEffects;
+      if (typeof se === 'boolean') return se;
+      if (Array.isArray(se)) {
+        const rel = path.relative(dir, file).split(path.sep).join('/');
+        return se.some((g) => path.matchesGlob(rel, g.includes('/') ? g.replace(/^\.\//, '') : `**/${g}`));
+      }
+      return true;
+    }
+    if (pkg && pkg.name) return true; // a package root without the field
+    if (dir === path.dirname(dir)) return true;
+  }
+}
+
 /**
  * @param {string} specifier
  * @param {string} importer absolute path of the importing file

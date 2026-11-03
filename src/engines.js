@@ -7,6 +7,7 @@
  */
 import { DatabaseSync } from 'node:sqlite';
 import { createRuntime, createHost } from './runtime.js';
+import { staticLink } from './static-link.js';
 
 /** The one query the dynamic linker runs per module. */
 export const RECORD_SQL = 'SELECT id, path, format, code, deps, exports, mime, content FROM module_records WHERE id = ?';
@@ -43,10 +44,23 @@ export function runSql(file) {
 }
 
 /**
- * Write the materialized engine: every record becomes an object literal and
- * every module body becomes a real function, so nothing is eval'd at runtime.
+ * Write the bundle out as a plain script.
+ *   engine 'static' (default): statically linked, one scope, direct references;
+ *                    falls back to 'dynamic' when the bundle needs it.
+ *   engine 'dynamic': the module records written as object literals and run by
+ *                    the same runtime the SQL engine uses.
+ * @returns {string}
  */
-export function materialize(file) {
+export function materialize(file, { engine = 'static', onFallback = () => {} } = {}) {
+  if (engine === 'static') {
+    const r = staticLink(file);
+    if (r.code) return r.code;
+    onFallback(r.fallback);
+  }
+  return materializeDynamic(file);
+}
+
+function materializeDynamic(file) {
   const db = new DatabaseSync(file, { readOnly: true });
   const entry = db.prepare("SELECT value FROM meta WHERE key = 'entry_id'").get().value;
   const rows = db.prepare('SELECT id, path, format, code, deps, exports, mime, content FROM module_records ORDER BY id').all();

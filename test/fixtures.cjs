@@ -55,6 +55,18 @@ console.log('> values', uno, two, libDefault, all.one, all.default);
 console.log('> has default', 'default' in mid);`,
   },
 
+  // a module that only re-exports must survive tree-shaking (lodash-es/value.js)
+  'reexport-only-hop': {
+    'impl.js': `export default function wrapperValue() { return 'v'; }`,
+    'hop.js': `export { default } from './impl.js';`,
+    'barrel.js': `export { default as value } from './hop.js';
+export { default as valueOf } from './impl.js';
+export * from './star-hop.js';`,
+    'star-hop.js': `export { default as viaStar } from './impl.js';`,
+    'index.js': `import * as ns from './barrel.js';
+console.log('>', Object.keys(ns).join(','), ns.value(), ns.viaStar === ns.valueOf);`,
+  },
+
   'export-star-conflict': {
     'x.js': `export const shared = 'x'; export const onlyX = 1;`,
     'y.js': `export const shared = 'y'; export const onlyY = 2;`,

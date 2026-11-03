@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { transformModule } from './transform.js';
-import { resolve } from './resolve.js';
+import { resolve, hasSideEffects } from './resolve.js';
 import { SCHEMA, LINK, TREE_SHAKE } from './sql.js';
 import { runtimeSource } from './engines.js';
 
@@ -88,10 +88,12 @@ export function build({ entry, out, treeShake = true }) {
   db.exec('BEGIN'); db.exec('PRAGMA defer_foreign_keys = ON');
   const q = {
     asset: db.prepare('INSERT INTO assets (id, mime, content) VALUES (?, ?, ?)'),
-    module: db.prepare('INSERT INTO modules (id, path, format, is_entry, asset_id) VALUES (?, ?, ?, ?, ?)'),
+    module: db.prepare('INSERT INTO modules (id, path, format, is_entry, side_effects, asset_id) VALUES (?, ?, ?, ?, ?, ?)'),
     statement: db.prepare('INSERT INTO statements (module_id, idx, code, pure) VALUES (?, ?, ?, ?)'),
     binding: db.prepare('INSERT OR IGNORE INTO bindings (module_id, name, stmt_idx) VALUES (?, ?, ?)'),
     ref: db.prepare('INSERT INTO refs (module_id, stmt_idx, kind, name, dep_idx) VALUES (?, ?, ?, ?, ?)'),
+    reloc: db.prepare('INSERT INTO relocations (module_id, stmt_idx, start, end, kind, name, dep_idx, form, local) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'),
+    reserve: db.prepare('INSERT OR IGNORE INTO reserved_names (name) VALUES (?)'),
     dep: db.prepare('INSERT INTO dependencies (importer_id, idx, specifier, kind, resolved_id) VALUES (?, ?, ?, ?, ?)'),
     export: db.prepare('INSERT INTO exports (module_id, name, kind, local_name, dep_idx, imported_name) VALUES (?, ?, ?, ?, ?, ?)'),
     meta: db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)'),
@@ -100,7 +102,7 @@ export function build({ entry, out, treeShake = true }) {
 
   for (const n of graph) {
     if (n.asset) q.asset.run(n.id, n.asset.mime, n.asset.content);
-    q.module.run(n.id, n.path, n.format, n.id === 1 ? 1 : 0, n.asset ? n.id : null);
+    q.module.run(n.id, n.path, n.format, n.id === 1 ? 1 : 0, n.id === 1 || hasSideEffects(n.file) ? 1 : 0, n.asset ? n.id : null);
     if (n.asset) {
       q.export.run(n.id, 'default', 'local', 'default', null, null);
       continue;
@@ -111,7 +113,10 @@ export function build({ entry, out, treeShake = true }) {
       q.statement.run(n.id, idx, s.code, s.pure ? 1 : 0);
       for (const name of s.declares) q.binding.run(n.id, name, idx);
       for (const r of s.refs) q.ref.run(n.id, idx, r.kind, r.name, r.dep ?? null);
+      for (const r of s.relocations) q.reloc.run(n.id, idx, r.start, r.end, r.kind, r.name, r.dep ?? null, r.form, r.local ?? null);
     });
+    for (const name of t.globals) q.reserve.run(name);
+    for (const name of t.innerNames) q.reserve.run(name);
     for (const e of t.exports) q.export.run(n.id, e.name, e.kind, e.local ?? null, e.dep ?? null, e.imported ?? null);
   }
 

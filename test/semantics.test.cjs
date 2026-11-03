@@ -57,6 +57,15 @@ for (const [name, files] of Object.entries(fixtures)) {
         const r = sh(process.execPath, [path.join(out, 'b.js')], dir);
         assert.equal(marked(r.out), expected, r.ok ? 'output differs' : r.out);
       });
+      if (!process.env.ROWPACK_CLI) {
+        await t.test(`dynamic runtime js${label}`, () => {
+          const js = path.join(out, 'b.dyn.js');
+          const e = sh(process.execPath, [CLI, 'emit', path.join(out, 'b.sqlite'), '-o', js, '--engine', 'dynamic'], dir);
+          assert.ok(e.ok, e.out);
+          const r = sh(process.execPath, [js], dir);
+          assert.equal(marked(r.out), expected, r.ok ? 'output differs' : r.out);
+        });
+      }
     }
   });
 }

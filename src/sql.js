@@ -25,6 +25,7 @@ CREATE TABLE modules (
   path     TEXT NOT NULL UNIQUE,
   format   TEXT NOT NULL CHECK (format IN ('esm', 'cjs', 'json', 'css', 'text', 'url')),
   is_entry INTEGER NOT NULL DEFAULT 0,
+  side_effects INTEGER NOT NULL DEFAULT 1, -- 0 when its package.json says "sideEffects": false
   asset_id INTEGER REFERENCES assets(id)
 ) STRICT;
 
@@ -54,6 +55,24 @@ CREATE TABLE refs (
   dep_idx   INTEGER
 ) STRICT;
 CREATE INDEX refs_by_stmt ON refs (module_id, stmt_idx);
+
+-- every place a statement names a module-level binding or an import, by offset
+-- into the statement's code: what a static linker needs to rewrite it (ELF: .rela)
+CREATE TABLE relocations (
+  module_id INTEGER NOT NULL,
+  stmt_idx  INTEGER NOT NULL,
+  start     INTEGER NOT NULL,
+  end       INTEGER NOT NULL,
+  kind      TEXT NOT NULL CHECK (kind IN ('local', 'import', 'dynamic')),
+  name      TEXT NOT NULL,          -- local binding, or the imported name ('*' = namespace)
+  dep_idx   INTEGER,
+  form      TEXT NOT NULL CHECK (form IN ('plain', 'callee', 'shorthand')),
+  local     TEXT                    -- for imports: the importing module's local name
+) STRICT;
+CREATE INDEX relocations_by_stmt ON relocations (module_id, stmt_idx, start);
+
+-- names the static linker must not hand out: globals read and inner-scope declarations
+CREATE TABLE reserved_names (name TEXT PRIMARY KEY) STRICT, WITHOUT ROWID;
 
 CREATE TABLE dependencies (
   importer_id INTEGER NOT NULL REFERENCES modules(id),
@@ -116,6 +135,18 @@ SELECT m.id, m.path, m.format,
 FROM modules m
 LEFT JOIN module_code c ON c.id = m.id
 LEFT JOIN assets a ON a.id = m.asset_id;
+
+-- relocation processing: where each relocation points after linking
+CREATE VIEW resolved_relocations AS
+SELECT r.module_id, r.stmt_idx, r.start, r.end, r.kind, r.form, r.name, r.local,
+  CASE WHEN r.kind = 'local' THEN r.module_id ELSE coalesce(x.origin_id, d.resolved_id) END AS target_id,
+  CASE WHEN r.kind = 'local' THEN r.name ELSE x.origin_local END AS target_local,
+  CASE WHEN r.kind = 'local' THEN m.format ELSE t.format END AS target_format
+FROM relocations r
+JOIN modules m ON m.id = r.module_id
+LEFT JOIN dependencies d ON r.kind <> 'local' AND d.importer_id = r.module_id AND d.idx = r.dep_idx
+LEFT JOIN linked_exports x ON r.kind = 'import' AND r.name <> '*' AND x.module_id = d.resolved_id AND x.name = r.name
+LEFT JOIN modules t ON t.id = coalesce(x.origin_id, d.resolved_id);
 
 -- ldd(1)
 CREATE VIEW ldd AS
@@ -197,14 +228,21 @@ HAVING count(*) = 1;
  *   ('s', module, idx)  a statement that must stay
  *   ('u', module, name) an export someone reads ('*' = all of them)
  * Roots are statements with side effects and everything the entry exports.
+ * In a package marked "sideEffects": false, a module's statements only run if
+ * something reads from that module, as in esbuild and Rollup.
  */
 export const TREE_SHAKE = `
 CREATE TEMP TABLE live AS
 WITH RECURSIVE
 node(kind, module_id, key) AS (
-  SELECT 's', module_id, CAST(idx AS TEXT) FROM statements WHERE pure = 0
+  SELECT 's', s.module_id, CAST(s.idx AS TEXT) FROM statements s JOIN modules m ON m.id = s.module_id
+  WHERE s.pure = 0 AND m.side_effects = 1
   UNION
   SELECT 'u', id, '*' FROM modules WHERE is_entry = 1
+  UNION
+  -- a module that is read from runs all of its side effects
+  SELECT 's', s.module_id, CAST(s.idx AS TEXT)
+  FROM node n JOIN statements s ON n.kind = 'u' AND s.module_id = n.module_id AND s.pure = 0
   UNION
   -- a live statement keeps the local declarations it reads
   SELECT 's', b.module_id, CAST(b.stmt_idx AS TEXT)
@@ -231,32 +269,41 @@ node(kind, module_id, key) AS (
   JOIN linked_exports x ON n.kind = 'u' AND x.module_id = n.module_id AND (n.key = '*' OR x.name = n.key)
   WHERE x.origin_local IS NULL
   UNION
-  -- a used re-export means its owner module's namespace must exist
-  SELECT 'u', x.origin_id, x.origin_local
+  -- a used re-export uses the same name one hop down, so every module on the chain stays
+  SELECT 'u', d.resolved_id, CASE WHEN e.kind = 'star' THEN n.key ELSE e.imported_name END
   FROM node n
-  JOIN linked_exports x ON n.kind = 'u' AND x.module_id = n.module_id AND (n.key = '*' OR x.name = n.key)
-  WHERE x.origin_local IS NOT NULL AND x.origin_id <> x.module_id
+  JOIN exports e ON n.kind = 'u' AND e.module_id = n.module_id
+    AND (e.kind = 'star' OR (e.kind = 'indirect' AND (n.key = '*' OR e.name = n.key)))
+  JOIN dependencies d ON d.importer_id = e.module_id AND d.idx = e.dep_idx
+  WHERE d.resolved_id IS NOT NULL AND NOT (e.kind = 'star' AND n.key = 'default')
 )
 SELECT * FROM node;
 
--- modules that do something or are read from, plus every module on the way to one
+-- Keep modules that are read from, and modules with side effects together
+-- with every importer on the way to them, so effects still run in import order.
+-- A module that is only read is evaluated by its reader's import.
 CREATE TEMP TABLE keep AS
-WITH RECURSIVE k(id) AS (
-  SELECT DISTINCT module_id FROM temp.live
-  UNION SELECT id FROM modules WHERE format IN ('cjs', 'css') OR is_entry = 1
+WITH RECURSIVE effect(id) AS (
+  SELECT DISTINCT s.module_id FROM temp.live l
+  JOIN statements s ON l.kind = 's' AND s.module_id = l.module_id AND s.idx = CAST(l.key AS INTEGER) AND s.pure = 0
+  JOIN modules m ON m.id = s.module_id AND m.side_effects = 1
+  UNION SELECT id FROM modules WHERE (format IN ('cjs', 'css') AND side_effects = 1) OR is_entry = 1
   UNION
-  SELECT d.importer_id FROM dependencies d JOIN k ON d.resolved_id = k.id WHERE d.kind <> 'dynamic'
+  SELECT d.importer_id FROM dependencies d JOIN effect e ON d.resolved_id = e.id WHERE d.kind <> 'dynamic'
 )
-SELECT DISTINCT id FROM k;
+SELECT id FROM effect
+UNION SELECT module_id FROM temp.live;
 
 DELETE FROM statements WHERE NOT EXISTS (SELECT 1 FROM temp.live l WHERE l.kind = 's' AND l.module_id = statements.module_id AND l.key = CAST(statements.idx AS TEXT));
 DELETE FROM refs WHERE NOT EXISTS (SELECT 1 FROM statements s WHERE s.module_id = refs.module_id AND s.idx = refs.stmt_idx);
+DELETE FROM relocations WHERE NOT EXISTS (SELECT 1 FROM statements s WHERE s.module_id = relocations.module_id AND s.idx = relocations.stmt_idx);
 DELETE FROM bindings WHERE NOT EXISTS (SELECT 1 FROM statements s WHERE s.module_id = bindings.module_id AND s.idx = bindings.stmt_idx);
 DELETE FROM exports WHERE kind = 'local' AND module_id IN (SELECT id FROM modules WHERE format = 'esm') AND NOT EXISTS (SELECT 1 FROM bindings b WHERE b.module_id = exports.module_id AND b.name = exports.local_name);
 
 DELETE FROM modules WHERE id NOT IN (SELECT id FROM temp.keep);
 DELETE FROM statements WHERE module_id NOT IN (SELECT id FROM modules);
 DELETE FROM refs WHERE module_id NOT IN (SELECT id FROM modules);
+DELETE FROM relocations WHERE module_id NOT IN (SELECT id FROM modules);
 DELETE FROM bindings WHERE module_id NOT IN (SELECT id FROM modules);
 DELETE FROM exports WHERE module_id NOT IN (SELECT id FROM modules);
 DELETE FROM dependencies WHERE importer_id NOT IN (SELECT id FROM modules) OR resolved_id NOT IN (SELECT id FROM modules);
