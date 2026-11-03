@@ -4,15 +4,19 @@
  * distcc ships preprocessed files. Requests are batched and capped in flight.
  */
 import fs from 'node:fs';
+import crypto from 'node:crypto';
+import zlib from 'node:zlib';
 import { LambdaClient, InvokeCommand } from '@aws-sdk/client-lambda';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
 import { defaultProvider } from '@aws-sdk/credential-provider-node';
 import { SignatureV4 } from '@smithy/signature-v4';
 import { Sha256 } from '@aws-crypto/sha256-js';
-import { Agent } from 'undici';
+// undici's own fetch: Node's built-in fetch ignores an Agent from the npm package,
+// which silently cost a new TLS handshake per request
+import { Agent, fetch } from 'undici';
 
 /** Classic Lambda: one Invoke call per batch. */
-export function lambdaSend({ functionName, region, maxSockets = 1024 }) {
+export function lambdaSend({ functionName, region, maxSockets = 1024, format = 'rows' }) {
   const client = new LambdaClient({
     region,
     maxAttempts: 1, // retries are ours, so they are counted
@@ -20,7 +24,7 @@ export function lambdaSend({ functionName, region, maxSockets = 1024 }) {
   });
   return async (modules) => {
     try {
-      const res = await client.send(new InvokeCommand({ FunctionName: functionName, Payload: JSON.stringify({ modules }) }));
+      const res = await client.send(new InvokeCommand({ FunctionName: functionName, Payload: JSON.stringify({ modules, format }) }));
       const body = JSON.parse(Buffer.from(res.Payload).toString('utf8'));
       if (res.FunctionError) throw new Error(`${res.FunctionError}: ${body.errorMessage}`);
       return body;
@@ -32,12 +36,14 @@ export function lambdaSend({ functionName, region, maxSockets = 1024 }) {
 }
 
 /** Lambda Web Function with IamAuth: a SigV4-signed HTTPS POST per batch. */
-export function webSend({ domain, region }) {
+export function webSend({ domain, region, format = 'rows' }) {
   const signer = new SignatureV4({ service: 'lambda', region, credentials: defaultProvider(), sha256: Sha256 });
-  const dispatcher = new Agent({ connections: 1024, pipelining: 0, keepAliveTimeout: 30_000 });
+  // IPv4 only: this client's network has no IPv6 route, and happy-eyeballs fallbacks cost a timeout
+  // note: undici's pipelining: 0 disables keep-alive; leaving it at the default reuses connections
+  const dispatcher = new Agent({ connections: 1024, keepAliveTimeout: 30_000, connect: { family: 4, timeout: 30_000 } });
   return async (modules) => {
-    const body = JSON.stringify({ modules });
-    const hash = Buffer.from(await new Sha256().update(body).digest()).toString('hex');
+    const body = JSON.stringify({ modules, format });
+    const hash = crypto.createHash('sha256').update(body).digest('hex');
     const signed = await signer.sign({
       method: 'POST',
       protocol: 'https:',
@@ -46,7 +52,12 @@ export function webSend({ domain, region }) {
       headers: { host: domain, 'content-type': 'application/json', 'x-amz-content-sha256': hash },
       body,
     });
-    const res = await fetch(`https://${domain}/compile`, { method: 'POST', headers: signed.headers, body, dispatcher });
+    let res;
+    try {
+      res = await fetch(`https://${domain}/compile`, { method: 'POST', headers: signed.headers, body, dispatcher });
+    } catch (err) {
+      throw Object.assign(err, { retryable: true }); // connection errors: count and retry
+    }
     if (res.status === 429 || res.status === 503) {
       await res.body?.cancel();
       throw Object.assign(new Error(`HTTP ${res.status} ${res.headers.get('lambda-web-error-type') || ''}`), { retryable: true });
@@ -97,6 +108,7 @@ export function remoteCompiler({ send, batch = 1, concurrency = 8 }) {
             const w = waiting.get(r.key);
             waiting.delete(r.key);
             if (r.error) w.reject(new Error(r.error));
+            else if (r.object) w.resolve({ object: zlib.gunzipSync(Buffer.from(r.object, 'base64')) });
             else w.resolve(r.result);
           }
         })

@@ -24,9 +24,11 @@ test('classic handler and Web Function server compile to the same bundle as a lo
   await build({ entry, out: path.join(out, 'local.sqlite') });
 
   const { handler } = await import(path.join(dist, 'event', 'index.mjs'));
-  const viaHandler = remoteCompiler({ send: (modules) => handler({ modules }), batch: 25, concurrency: 8 });
-  await build({ entry, out: path.join(out, 'event.sqlite'), compiler: viaHandler });
-  assert.equal(hash(path.join(out, 'event.sqlite')), hash(path.join(out, 'local.sqlite')));
+  for (const format of ['rows', 'object']) {
+    const viaHandler = remoteCompiler({ send: (modules) => handler({ modules, format }), batch: 25, concurrency: 8 });
+    await build({ entry, out: path.join(out, `event-${format}.sqlite`), compiler: viaHandler });
+    assert.equal(hash(path.join(out, `event-${format}.sqlite`)), hash(path.join(out, 'local.sqlite')), `${format} build differs`);
+  }
 
   const port = 30000 + Math.floor(Math.random() * 20000);
   const server = spawn(process.execPath, [path.join(dist, 'web', 'index.js')], {

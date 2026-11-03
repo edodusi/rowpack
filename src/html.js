@@ -24,9 +24,10 @@ ${body}
 `;
 }
 
-export function sqlPage(sqliteFile, title = 'rowpack', { inspector = false } = {}) {
-  const sqlJs = fs.readFileSync(require.resolve('sql.js/dist/sql-wasm.js'), 'utf8');
-  const wasm = fs.readFileSync(require.resolve('sql.js/dist/sql-wasm.wasm')).toString('base64');
+export function sqlPage(sqliteFile, title = 'rowpack', { inspector = false, sqlJsDir = null } = {}) {
+  const sqlJsFile = (name) => (sqlJsDir ? `${sqlJsDir}/${name}` : require.resolve(`sql.js/dist/${name}`));
+  const sqlJs = fs.readFileSync(sqlJsFile('sql-wasm.js'), 'utf8');
+  const wasm = fs.readFileSync(sqlJsFile('sql-wasm.wasm')).toString('base64');
   const bundle = fs.readFileSync(sqliteFile).toString('base64');
   return page(title, `<script>${scriptSafe(sqlJs)}</script>
 <script>
@@ -36,6 +37,7 @@ export function sqlPage(sqliteFile, title = 'rowpack', { inspector = false } = {
   const SQL = await initSqlJs({ wasmBinary: await bytes(${JSON.stringify(wasm)}, 'application/wasm') });
   const db = new SQL.Database(await bytes(${JSON.stringify(bundle)}, 'application/vnd.sqlite3'));
   const tReady = performance.now();
+  window.__rowpackDb = db; // modules can query the bundle they are running from
   ${scriptSafe(runtimeSource())}
   const statements = new Map();
   const query = (sql, params) => {

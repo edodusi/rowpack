@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
-# Remove everything distributed/infra created: both Web Functions (with their
-# revisions and endpoints), the classic function, the code bucket, the role
-# and the log groups. Usage: AWS_PROFILE=<profile> ./distributed/teardown.sh
+# Remove what distributed/infra created. With no arguments, both stacks:
+#   RowpackDistributed  the three compile backends used by bench.js
+#   RowpackServe        the bundle-on-first-visit site (CloudFront, Web Function, S3)
+# Usage: AWS_PROFILE=<profile> ./distributed/teardown.sh [RowpackDistributed] [RowpackServe]
 set -euo pipefail
-cd "$(dirname "$0")/infra"
-export CDK_DEFAULT_REGION="${AWS_REGION:-eu-west-1}"
-npx cdk destroy --force RowpackDistributed
-rm -f ../outputs.json
-echo "RowpackDistributed removed from ${CDK_DEFAULT_REGION}."
+here="$(cd "$(dirname "$0")" && pwd)"
+stacks=("$@")
+[ ${#stacks[@]} -eq 0 ] && stacks=(RowpackServe RowpackDistributed)
+cd "$here/infra"
+for s in "${stacks[@]}"; do
+  ROWPACK_REGION="${ROWPACK_REGION:-eu-west-1}" npx cdk destroy --force "$s"
+done
+rm -f "$here/outputs.json" "$here/serve-outputs.json"
+echo "removed: ${stacks[*]}"

@@ -10,6 +10,7 @@ import { transformModule } from './transform.js';
 import { resolve, hasSideEffects, clearResolveCache } from './resolve.js';
 import { SCHEMA, LINK, TREE_SHAKE, REFRESH_IMAGE } from './sql.js';
 import { runtimeSource } from './engines.js';
+import { readObjectHeader, linkObjects } from './object.js';
 
 const ASSET_TYPES = {
   '.json': ['json', 'application/json'],
@@ -81,6 +82,7 @@ export async function build({ entry, out, treeShake = true, jobs = 1, compiler =
       q.export.run(n.id, 'default', 'local', 'default', null, null);
       continue;
     }
+    if (n.object) continue; // linked from the object file below
     const t = n.transformed;
     t.deps.forEach((d, idx) => q.dep.run(n.id, idx, d.specifier, d.kind, n.deps[idx]));
     t.statements.forEach((s, idx) => {
@@ -99,6 +101,7 @@ export async function build({ entry, out, treeShake = true, jobs = 1, compiler =
   q.meta.run('generator', 'rowpack 0.1.0');
   q.runtime.run('runtime.js', runtimeSource());
   db.exec('COMMIT');
+  linkObjects(db, graph.filter((n) => n.object).map((n) => ({ id: n.id, bytes: n.object, resolved: n.deps })));
   const tInsert = performance.now();
 
   // ---- 3. link and check, in SQL ---------------------------------------
@@ -155,6 +158,11 @@ async function walkGraph(entryPath, root, pool) {
       return;
     }
     const job = transform(file, node.path).then((t) => {
+      if (t.object) {
+        // an object file: read only what the walk needs, link the rest later in SQL
+        node.object = t.object;
+        t = readObjectHeader(t.object);
+      }
       node.format = t.format;
       node.transformed = t;
       for (const dep of t.deps) {

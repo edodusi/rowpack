@@ -32,7 +32,11 @@ const backends = {
   'lambda': () => lambdaSend({ functionName: outputs.CompileFunction, region }),
   'web-1thread': () => webSend({ domain: outputs['Domain1thread'], region }),
   'web-pool': () => webSend({ domain: outputs.Domainpool, region }),
+  // object files instead of JSON rows, at the fan-outs that matter
+  'lambda+objects': () => lambdaSend({ functionName: outputs.CompileFunction, region, format: 'object' }),
+  'web-pool+objects': () => webSend({ domain: outputs.Domainpool, region, format: 'object' }),
 };
+const gridFor = (backend) => (backend.endsWith('+objects') ? [[32, 25], [128, 1], [128, 25], [512, 1]] : grid);
 
 const hash = (f) => crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex');
 const median = (xs) => {
@@ -53,12 +57,18 @@ function graphDepth(file) {
   return depth;
 }
 
-const results = { date: new Date().toISOString(), region, machine: os.cpus()[0].model, apps: {} };
+// Rows are checkpointed, so a rerun after a network hiccup resumes instead of starting over.
+const checkpoint = path.join(here, 'results', 'partial.json');
+fs.mkdirSync(path.dirname(checkpoint), { recursive: true });
+const done = fs.existsSync(checkpoint) ? JSON.parse(fs.readFileSync(checkpoint, 'utf8')) : null;
+const results = done ?? { date: new Date().toISOString(), region, machine: os.cpus()[0].model, apps: {} };
+const save = () => fs.writeFileSync(checkpoint, JSON.stringify(results, null, 2));
 
 for (const [name, entry] of apps) {
   step(`== ${name}`);
   const local = path.join(work, `${name}.local.sqlite`);
-  const r = (results.apps[name] = { runs: [] });
+  const r = (results.apps[name] ??= { runs: [] });
+  const has = (backend, c, b) => r.runs.some((x) => x.backend === backend && x.concurrency === c && x.batch === b);
   const times = [];
   for (let i = 0; i < RUNS + 1; i++) {
     const t = performance.now();
@@ -70,20 +80,22 @@ for (const [name, entry] of apps) {
   r.sourceBytes = db.prepare("SELECT sum(length(CAST(code AS BLOB))) n FROM statements").get().n;
   db.close();
   r.depth = graphDepth(local);
-  r.runs.push({ backend: 'local', concurrency: 1, batch: 1, warm_ms: median(times) });
+  if (!has('local', 1, 1)) r.runs.push({ backend: 'local', concurrency: 1, batch: 1, warm_ms: median(times) });
 
   const t8 = [];
-  for (let i = 0; i < RUNS + 1; i++) {
+  for (let i = 0; !has('local-8-workers', 8, 1) && i < RUNS + 1; i++) {
     const t = performance.now();
     await build({ entry, out: path.join(work, `${name}.jobs.sqlite`), treeShake: false, jobs: 8 });
     if (i > 0) t8.push(performance.now() - t);
   }
-  r.runs.push({ backend: 'local-8-workers', concurrency: 8, batch: 1, warm_ms: median(t8) });
+  if (t8.length) r.runs.push({ backend: 'local-8-workers', concurrency: 8, batch: 1, warm_ms: median(t8) });
+  save();
   const expected = hash(local);
 
   for (const [backend, makeSend] of Object.entries(backends)) {
-    for (const [concurrency, batch] of grid) {
+    for (const [concurrency, batch] of gridFor(backend)) {
       const label = `${backend} c=${concurrency} b=${batch}`;
+      if (has(backend, concurrency, batch)) continue;
       const runs = [];
       let first = null;
       let stats = null;
@@ -109,6 +121,7 @@ for (const [name, entry] of apps) {
         peak_in_flight: stats.peakInFlight,
       };
       r.runs.push(row);
+      save();
       step(`  ${label}: first ${first.toFixed(0)} ms, warm ${row.warm_ms.toFixed(0)} ms, ${row.environments_seen} env, ${row.retries} retries`);
     }
   }
@@ -118,6 +131,7 @@ const dir = path.join(here, 'results');
 fs.mkdirSync(dir, { recursive: true });
 const stem = results.date.slice(0, 10);
 fs.writeFileSync(path.join(dir, `${stem}.json`), JSON.stringify(results, null, 2));
+fs.rmSync(checkpoint);
 
 const lines = [`# distributed rowpack, ${stem}`, '', `Client: ${results.machine}. Functions in ${region}. Every remote build was checked byte-identical to the local one.`, ''];
 for (const [name, r] of Object.entries(results.apps)) {

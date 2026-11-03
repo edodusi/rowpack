@@ -9,14 +9,14 @@ import { fileURLToPath } from 'node:url';
 import { compileBatch } from './compile.js';
 
 if (!isMainThread) {
-  parentPort.on('message', ({ job, modules }) => parentPort.postMessage({ job, ...compileBatch(modules) }));
+  parentPort.on('message', ({ job, modules, format }) => parentPort.postMessage({ job, ...compileBatch(modules, format) }));
 } else {
   const threads = process.env.THREADS === 'auto' ? os.availableParallelism() : 1;
   const envId = Math.random().toString(36).slice(2, 8);
   let inFlight = 0;
   let peakInFlight = 0;
 
-  let compile = async (modules) => compileBatch(modules);
+  let compile = async (modules, format) => compileBatch(modules, format);
   if (threads > 1) {
     const workers = Array.from({ length: threads }, () => ({ w: new Worker(fileURLToPath(import.meta.url)), busy: 0 }));
     const waiting = new Map();
@@ -28,12 +28,12 @@ if (!isMainThread) {
         waiting.delete(job);
       });
     }
-    compile = (modules) => new Promise((done) => {
+    compile = (modules, format) => new Promise((done) => {
       const slot = workers.reduce((a, b) => (b.busy < a.busy ? b : a));
       slot.busy++;
       const job = next++;
       waiting.set(job, done);
-      slot.w.postMessage({ job, modules });
+      slot.w.postMessage({ job, modules, format });
     });
   }
 
@@ -53,8 +53,8 @@ if (!isMainThread) {
       inFlight++;
       peakInFlight = Math.max(peakInFlight, inFlight);
       try {
-        const { modules } = JSON.parse(Buffer.concat(chunks).toString('utf8'));
-        const out = await compile(modules);
+        const { modules, format } = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+        const out = await compile(modules, format);
         res.writeHead(200, { 'content-type': 'application/json' });
         res.end(JSON.stringify({ ...out, environment: { envId, threads, inFlight, peakInFlight } }));
       } catch (err) {

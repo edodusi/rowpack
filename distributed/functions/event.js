@@ -6,5 +6,5 @@ const coldAt = Date.now();
 
 export const handler = async (event) => {
   invocations++;
-  return { ...compileBatch(event.modules), environment: { coldAt, invocations } };
+  return { ...compileBatch(event.modules, event.format), environment: { coldAt, invocations } };
 };
