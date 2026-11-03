@@ -41,18 +41,22 @@ for (const [name, files] of Object.entries(fixtures)) {
     const expected = marked(native.out);
     assert.notEqual(expected, '', 'fixture prints nothing to compare');
 
-    const out = path.join(dir, 'out');
-    const build = sh(process.execPath, [CLI, 'build', path.join(src, 'index.js'), '-o', path.join(out, 'b.sqlite'),
-      '--html', path.join(out, 'b.html'), '--js', path.join(out, 'b.js')], dir);
+    const modes = process.env.ROWPACK_CLI ? [[]] : [[], ['--no-tree-shake']];
+    for (const extra of modes) {
+      const label = extra.length ? ' (no tree-shaking)' : '';
+      const out = path.join(dir, extra.length ? 'out-full' : 'out');
+      const build = sh(process.execPath, [CLI, 'build', path.join(src, 'index.js'), '-o', path.join(out, 'b.sqlite'),
+        '--html', path.join(out, 'b.html'), '--js', path.join(out, 'b.js'), ...extra], dir);
 
-    await t.test('build', () => assert.ok(build.ok, build.out));
-    await t.test('sql linker', () => {
-      const r = sh(process.execPath, [CLI, 'run', path.join(out, 'b.sqlite')], dir);
-      assert.equal(marked(r.out), expected, r.ok ? 'output differs' : r.out);
-    });
-    await t.test('materialized js', () => {
-      const r = sh(process.execPath, [path.join(out, 'b.js')], dir);
-      assert.equal(marked(r.out), expected, r.ok ? 'output differs' : r.out);
-    });
+      await t.test(`build${label}`, () => assert.ok(build.ok, build.out));
+      await t.test(`sql linker${label}`, () => {
+        const r = sh(process.execPath, [CLI, 'run', path.join(out, 'b.sqlite')], dir);
+        assert.equal(marked(r.out), expected, r.ok ? 'output differs' : r.out);
+      });
+      await t.test(`materialized js${label}`, () => {
+        const r = sh(process.execPath, [path.join(out, 'b.js')], dir);
+        assert.equal(marked(r.out), expected, r.ok ? 'output differs' : r.out);
+      });
+    }
   });
 }
