@@ -36,12 +36,13 @@ const icons = {
   fn: find('Res_AWS-Lambda_Lambda-Function_48.svg'),
   s3: find('Arch_Amazon-Simple-Storage-Service_48.svg'),
   object: find('Res_Amazon-Simple-Storage-Service_Object_48.svg'),
-  cloud: find('AWS-Cloud-logo_32.svg'),
+  cloud: find('AWS-Cloud-logo_32_Dark.svg'), // the current logo, for light backgrounds
   region: find('Region_32.svg'),
   laptop: find('Res_Client_48_Light.svg'),
 };
 
-const FONT = "font-family='Helvetica, Arial, sans-serif'";
+// AWS diagram guidance: Amazon Ember where installed, Arial otherwise
+const FONT = "font-family='Amazon Ember, Arial, Helvetica, sans-serif'";
 const text = (x, y, s, { size = 13, weight = 400, anchor = 'middle', fill = '#232F3E' } = {}) =>
   s.split('\n').map((line, i) => `<text x='${x}' y='${y + i * (size + 3)}' ${FONT} font-size='${size}' font-weight='${weight}' text-anchor='${anchor}' fill='${fill}'>${line.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</text>`).join('');
 const icon = (x, y, href, label, size = 56) => `<image x='${x - size / 2}' y='${y - size / 2}' width='${size}' height='${size}' href='${href}'/>${text(x, y + size / 2 + 18, label, { size: 12.5 })}`;
@@ -76,8 +77,8 @@ const serve = svg(1100, 650, [
   group(430, 90, 630, 460, icons.region, 'eu-west-1', '#00A4A6'),
   icon(80, 300, icons.client, 'Browser'),
   icon(300, 300, icons.cloudfront, 'Amazon CloudFront\n(origin access control)'),
-  icon(570, 200, icons.lambda, 'Lambda Web Function\nrowpack-serve\n(IamAuth endpoint)'),
-  icon(930, 200, icons.fn, 'Lambda function\nrowpack-serve-compile'),
+  icon(570, 200, icons.lambda, 'AWS Lambda Web Function\nrowpack-serve\n(IamAuth endpoint)'),
+  icon(930, 200, icons.fn, 'AWS Lambda function\nrowpack-serve-compile'),
   icon(930, 450, icons.s3, 'Amazon S3\nobjects/  builds/  locks/'),
   // 1: browser to CloudFront
   arrow([[112, 300], [268, 300]], 'GET /', { lx: 190, ly: 290 }),
@@ -103,9 +104,9 @@ const serve = svg(1100, 650, [
 
 // ---- distributed benchmark ---------------------------------------------------------
 const rows = [
-  [150, 'rowpack-compile', 'Lambda function (Event Function)', 'one request per environment', 'Invoke API'],
-  [300, 'rowpack-web-1thread', 'Lambda Web Function', 'many requests per environment, 1 thread', 'HTTPS, SigV4 (IamAuth)'],
-  [450, 'rowpack-web-pool', 'Lambda Web Function', 'many requests per environment, a thread per vCPU', 'HTTPS, SigV4 (IamAuth)'],
+  [150, 'rowpack-compile', 'AWS Lambda function (Event Function)', 'one request per environment', 'Invoke API'],
+  [300, 'rowpack-web-1thread', 'AWS Lambda Web Function', 'many requests per environment, 1 thread', 'HTTPS, SigV4 (IamAuth)'],
+  [450, 'rowpack-web-pool', 'AWS Lambda Web Function', 'many requests per environment, a thread per vCPU', 'HTTPS, SigV4 (IamAuth)'],
 ];
 const dist = svg(1000, 560, [
   icon(90, 300, icons.laptop, 'rowpack build\n(graph walk + SQLite)'),
