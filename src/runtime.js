@@ -105,6 +105,62 @@ export function createRuntime(getRecord, host) {
   };
 }
 
+/**
+ * Module records straight from the database. At startup one recursive query
+ * fetches everything the entry imports statically (ldd, in one SELECT) and
+ * all module bodies are compiled in one go; anything reached only through
+ * import() is fetched by its own query when it is first needed.
+ * `query(sql, params)` returns rows as objects. Also serialized.
+ */
+export function createSqlSource(query, entryId) {
+  const CLOSURE = `WITH RECURSIVE closure(id) AS (
+    SELECT ? UNION SELECT d.resolved_id FROM dependencies d JOIN closure c ON d.importer_id = c.id WHERE d.kind <> 'dynamic'
+  ) SELECT l.id, l.path, l.format, l.code, l.deps, l.exports, a.mime, a.content
+    FROM closure c JOIN load_image l ON l.id = c.id LEFT JOIN assets a ON a.id = l.asset_id`;
+  const stats = { queries: 0, modules: 0, queryMs: 0, compileMs: 0 };
+  const now = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
+  const cache = new Map();
+
+  function timedQuery(sql, params) {
+    const t = now();
+    const rows = query(sql, params);
+    stats.queryMs += now() - t;
+    return rows;
+  }
+
+  function load(rows) {
+    const t = now();
+    // one compilation unit for the whole batch: V8 parses each body lazily on first call
+    const js = rows.filter((r) => r.format === 'esm' || r.format === 'cjs');
+    const factories = js.length
+      ? new Function(`return [${js.map((r) => (r.format === 'esm'
+        ? `function (__export, __import, __dynamic) {\n${r.code}\n}`
+        : `function (module, exports, require) {\n${r.code}\n}`)).join(',\n')}];`)()
+      : [];
+    js.forEach((r, i) => { r.factory = factories[i]; });
+    for (const r of rows) {
+      r.deps = JSON.parse(r.deps);
+      r.exports = JSON.parse(r.exports);
+      cache.set(r.id, r);
+    }
+    stats.modules += rows.length;
+    stats.compileMs += now() - t;
+  }
+
+  stats.queries++;
+  load(timedQuery(CLOSURE, [entryId]));
+  return {
+    stats,
+    getRecord(id) {
+      if (!cache.has(id)) {
+        stats.queries++;
+        load(timedQuery(CLOSURE, [id]).filter((r) => !cache.has(r.id)));
+      }
+      return cache.get(id);
+    },
+  };
+}
+
 /** How non-JavaScript modules become values, per platform. Also serialized. */
 export function createHost() {
   const isBrowser = typeof document !== 'undefined';

@@ -6,7 +6,7 @@
  */
 import fs from 'node:fs';
 import { createRequire } from 'node:module';
-import { RECORD_SQL, runtimeSource } from './engines.js';
+import { runtimeSource } from './engines.js';
 
 const require = createRequire(import.meta.url);
 const scriptSafe = (js) => js.replace(/<\/(script)/gi, '<\\/$1');
@@ -36,19 +36,22 @@ export function sqlPage(sqliteFile, title = 'rowpack') {
   const db = new SQL.Database(await bytes(${JSON.stringify(bundle)}, 'application/vnd.sqlite3'));
   const tReady = performance.now();
   ${scriptSafe(runtimeSource())}
-  const stmt = db.prepare(${JSON.stringify(RECORD_SQL)});
-  let queries = 0;
-  const runtime = createRuntime((id) => {
-    queries++;
-    stmt.bind([id]);
-    const row = stmt.step() ? stmt.getAsObject() : null;
+  const statements = new Map();
+  const query = (sql, params) => {
+    let stmt = statements.get(sql);
+    if (!stmt) statements.set(sql, (stmt = db.prepare(sql)));
+    stmt.bind(params);
+    const rows = [];
+    while (stmt.step()) rows.push(stmt.getAsObject());
     stmt.reset();
-    return row && { ...row, deps: JSON.parse(row.deps), exports: JSON.parse(row.exports) };
-  }, createHost());
+    return rows;
+  };
   const entry = Number(db.exec("SELECT value FROM meta WHERE key = 'entry_id'")[0].values[0][0]);
+  const source = createSqlSource(query, entry);
+  const runtime = createRuntime(source.getRecord, createHost());
   runtime.run(entry);
   const tDone = performance.now();
-  window.__rowpack = { engine: 'sql', db, queries, sqliteReadyMs: tReady - t0, linkAndRunMs: tDone - tReady, totalMs: tDone - t0 };
+  window.__rowpack = { engine: 'sql', db, ...source.stats, sqliteReadyMs: tReady - t0, linkAndRunMs: tDone - tReady, totalMs: tDone - t0, readyAt: tDone };
 })().catch((e) => { window.__rowpackError = String(e && e.stack || e); throw e; });
 </script>`);
 }
@@ -57,6 +60,6 @@ export function fastPage(js, title = 'rowpack') {
   return page(title, `<script>
 const __t0 = performance.now();
 ${scriptSafe(js)}
-window.__rowpack = { engine: 'materialized', totalMs: performance.now() - __t0 };
+window.__rowpack = { engine: 'materialized', totalMs: performance.now() - __t0, readyAt: performance.now() };
 </script>`);
 }

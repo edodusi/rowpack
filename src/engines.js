@@ -6,41 +6,26 @@
  *     written out as a plain JavaScript file.
  */
 import { DatabaseSync } from 'node:sqlite';
-import { createRuntime, createHost } from './runtime.js';
+import { createRuntime, createHost, createSqlSource } from './runtime.js';
 import { staticLink } from './static-link.js';
 
-/** The one query the dynamic linker runs per module. */
-export const RECORD_SQL = 'SELECT id, path, format, code, deps, exports, mime, content FROM module_records WHERE id = ?';
-
 export function runtimeSource() {
-  return `const createRuntime = ${createRuntime.toString()};\nconst createHost = ${createHost.toString()};`;
-}
-
-export function toRecord(row) {
-  return {
-    path: row.path,
-    format: row.format,
-    code: row.code,
-    deps: JSON.parse(row.deps),
-    exports: JSON.parse(row.exports),
-    mime: row.mime,
-    content: row.content,
-  };
+  return [createRuntime, createHost, createSqlSource].map((f) => `const ${f.name} = ${f.toString()};`).join('\n');
 }
 
 /** Run a .sqlite bundle in Node by querying it. Returns the entry namespace and stats. */
 export function runSql(file) {
   const db = new DatabaseSync(file, { readOnly: true });
-  const stmt = db.prepare(RECORD_SQL);
-  let queries = 0;
-  const runtime = createRuntime((id) => {
-    queries++;
-    const row = stmt.get(id);
-    return row && toRecord(row);
-  }, createHost());
+  const statements = new Map();
+  const query = (sql, params) => {
+    let stmt = statements.get(sql);
+    if (!stmt) statements.set(sql, (stmt = db.prepare(sql)));
+    return stmt.all(...params);
+  };
   const entry = Number(db.prepare("SELECT value FROM meta WHERE key = 'entry_id'").get().value);
-  const ns = runtime.run(entry);
-  return { ns, queries, close: () => db.close() };
+  const source = createSqlSource(query, entry);
+  const ns = createRuntime(source.getRecord, createHost()).run(entry);
+  return { ns, get queries() { return source.stats.queries; }, close: () => db.close() };
 }
 
 /**

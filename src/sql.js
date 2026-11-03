@@ -105,6 +105,19 @@ CREATE TABLE linked_exports (
   PRIMARY KEY (module_id, name)
 ) STRICT, WITHOUT ROWID;
 
+-- The load image: what the dynamic linker reads, one row per module, computed
+-- from the tables above at link time (ELF: program headers and segments, next
+-- to the sections that tools read). strip keeps this and drops the rest.
+CREATE TABLE load_image (
+  id       INTEGER PRIMARY KEY,
+  path     TEXT NOT NULL,
+  format   TEXT NOT NULL,
+  code     TEXT,
+  deps     TEXT NOT NULL,   -- {"dep index": module id}
+  exports  TEXT NOT NULL,   -- [[name, origin module, origin binding | null], ...]
+  asset_id INTEGER REFERENCES assets(id)
+) STRICT;
+
 -- the loader, so the bundle carries the code that runs it
 CREATE TABLE runtime (name TEXT PRIMARY KEY, code TEXT NOT NULL) STRICT, WITHOUT ROWID;
 
@@ -124,17 +137,21 @@ SELECT m.id AS id,
   AS code
 FROM modules m WHERE m.format IN ('esm', 'cjs');
 
--- the dynamic linker's view of a module: one row, one query per module load
-CREATE VIEW module_records AS
+-- how a load_image row is computed
+CREATE VIEW module_image AS
 SELECT m.id, m.path, m.format,
   CASE WHEN m.format IN ('esm', 'cjs') THEN c.code END AS code,
   (SELECT json_group_object(CAST(d.idx AS TEXT), d.resolved_id) FROM dependencies d WHERE d.importer_id = m.id) AS deps,
   (SELECT json_group_array(json_array(x.name, x.origin_id, x.origin_local))
      FROM (SELECT * FROM linked_exports x WHERE x.module_id = m.id ORDER BY x.name) x) AS exports,
-  a.mime, a.content
+  m.asset_id
 FROM modules m
-LEFT JOIN module_code c ON c.id = m.id
-LEFT JOIN assets a ON a.id = m.asset_id;
+LEFT JOIN module_code c ON c.id = m.id;
+
+-- the dynamic linker's view of a module
+CREATE VIEW module_records AS
+SELECT l.id, l.path, l.format, l.code, l.deps, l.exports, a.mime, a.content
+FROM load_image l LEFT JOIN assets a ON a.id = l.asset_id;
 
 -- relocation processing: where each relocation points after linking
 CREATE VIEW resolved_relocations AS
@@ -172,9 +189,9 @@ WHERE r.kind = 'import' AND r.name <> '*' AND t.format <> 'cjs'
 
 -- a module's size as it will be shipped
 CREATE VIEW module_sizes AS
-SELECT m.path, m.format,
-  coalesce(length(CAST(c.code AS BLOB)), 0) + coalesce(length(CAST(a.content AS BLOB)), 0) AS bytes
-FROM modules m LEFT JOIN module_code c ON c.id = m.id LEFT JOIN assets a ON a.id = m.asset_id
+SELECT l.path, l.format,
+  coalesce(length(CAST(l.code AS BLOB)), 0) + coalesce(length(CAST(a.content AS BLOB)), 0) AS bytes
+FROM load_image l LEFT JOIN assets a ON a.id = l.asset_id
 ORDER BY bytes DESC;
 `;
 
@@ -278,6 +295,7 @@ node(kind, module_id, key) AS (
   WHERE d.resolved_id IS NOT NULL AND NOT (e.kind = 'star' AND n.key = 'default')
 )
 SELECT * FROM node;
+CREATE INDEX temp.live_by_node ON live (kind, module_id, key);
 
 -- Keep modules that are read from, and modules with side effects together
 -- with every importer on the way to them, so effects still run in import order.
@@ -311,4 +329,11 @@ DELETE FROM assets WHERE id NOT IN (SELECT asset_id FROM modules WHERE asset_id 
 
 DROP TABLE temp.live;
 DROP TABLE temp.keep;
+`;
+
+/** Recompute the load image from the link-edit tables. Run after every change. */
+export const REFRESH_IMAGE = `
+DELETE FROM load_image;
+INSERT INTO load_image (id, path, format, code, deps, exports, asset_id)
+SELECT id, path, format, code, deps, exports, asset_id FROM module_image;
 `;

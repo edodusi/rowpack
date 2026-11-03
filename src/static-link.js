@@ -65,6 +65,7 @@ export function staticLink(file) {
 
 function link(db) {
   const all = (sql) => db.prepare(sql).all();
+  if (db.prepare("SELECT 1 FROM meta WHERE key = 'stripped'").get()) return { fallback: 'the bundle was stripped of its relocations' };
   const modules = new Map(all('SELECT m.id, m.path, m.format, m.is_entry, a.mime, a.content FROM modules m LEFT JOIN assets a ON a.id = m.asset_id').map((m) => [m.id, m]));
   const deps = new Map();
   for (const d of all('SELECT importer_id, idx, kind, resolved_id FROM dependencies ORDER BY importer_id, idx')) {

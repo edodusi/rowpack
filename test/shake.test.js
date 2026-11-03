@@ -53,12 +53,12 @@ fs.writeFileSync(path.join(src, 'package.json'), '{"type":"module"}');
 const marked = (out) => out.split('\n').filter((l) => l.startsWith('> ')).join('\n');
 const runJs = (js) => marked(execFileSync(process.execPath, ['-e', js], { encoding: 'utf8' }));
 
-test('tree-shaking removes dead code and keeps behaviour', () => {
+test('tree-shaking removes dead code and keeps behaviour', async () => {
   // risky.js is not imported by index.js, so build it as a second entry below
   const shaken = path.join(root, 'shaken.sqlite');
   const full = path.join(root, 'full.sqlite');
-  const r = build({ entry: path.join(src, 'index.js'), out: shaken });
-  build({ entry: path.join(src, 'index.js'), out: full, treeShake: false });
+  const r = await build({ entry: path.join(src, 'index.js'), out: shaken });
+  await build({ entry: path.join(src, 'index.js'), out: full, treeShake: false });
 
   const expected = marked(execFileSync(process.execPath, ['index.js'], { cwd: src, encoding: 'utf8' }));
   assert.equal(runJs(materialize(shaken)), expected);
@@ -80,9 +80,9 @@ test('tree-shaking removes dead code and keeps behaviour', () => {
   assert.ok(r.stats.after.statements < r.stats.before.statements);
 });
 
-test('side effects are never removed', () => {
+test('side effects are never removed', async () => {
   const out = path.join(root, 'risky.sqlite');
-  build({ entry: path.join(src, 'risky.js'), out });
+  await build({ entry: path.join(src, 'risky.js'), out });
   const db = new DatabaseSync(out, { readOnly: true });
   const code = db.prepare("SELECT group_concat(code, '\n') c FROM statements").get().c;
   db.close();
@@ -91,9 +91,9 @@ test('side effects are never removed', () => {
   assert.match(code, /var dup = 2/, 'a redeclaration changes the value, so it stays');
 });
 
-test('shaking an already shaken bundle changes nothing', () => {
+test('shaking an already shaken bundle changes nothing', async () => {
   const out = path.join(root, 'twice.sqlite');
-  const r = build({ entry: path.join(src, 'index.js'), out });
+  const r = await build({ entry: path.join(src, 'index.js'), out });
   const { stderr: report } = spawnSync(process.execPath, [path.join(import.meta.dirname, '..', 'bin', 'rowpack.js'), 'shake', out], { encoding: 'utf8' });
   const db = new DatabaseSync(out, { readOnly: true });
   assert.equal(db.prepare('SELECT count(*) n FROM statements').get().n, r.stats.after.statements);

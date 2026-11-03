@@ -9,12 +9,14 @@ import path from 'node:path';
 const EXTENSIONS = ['', '.js', '.mjs', '.cjs', '.json', '/index.js', '/index.mjs', '/index.json'];
 const CONDITIONS = ['browser', 'import', 'module', 'default'];
 
+const statCache = new Map();
 const isFile = (p) => {
-  try {
-    return fs.statSync(p).isFile();
-  } catch {
-    return false;
+  let r = statCache.get(p);
+  if (r === undefined) {
+    r = fs.statSync(p, { throwIfNoEntry: false })?.isFile() ?? false;
+    statCache.set(p, r);
   }
+  return r;
 };
 
 function probe(base) {
@@ -121,10 +123,23 @@ export function hasSideEffects(file) {
  * @param {string} importer absolute path of the importing file
  * @returns {string|null} absolute real path
  */
+const resolveCache = new Map();
+
 export function resolve(specifier, importer) {
   if (specifier.startsWith('node:')) return null;
-  if (specifier.startsWith('.') || specifier.startsWith('/')) {
-    return probe(path.resolve(path.dirname(importer), specifier));
+  const dir = path.dirname(importer);
+  const key = `${dir}\0${specifier}`;
+  let r = resolveCache.get(key);
+  if (r === undefined) {
+    r = specifier.startsWith('.') || specifier.startsWith('/') ? probe(path.resolve(dir, specifier)) : resolveBare(specifier, dir);
+    resolveCache.set(key, r);
   }
-  return resolveBare(specifier, path.dirname(importer));
+  return r;
+}
+
+/** Forget cached file system lookups (between builds of a changing tree). */
+export function clearResolveCache() {
+  statCache.clear();
+  resolveCache.clear();
+  pkgCache.clear();
 }

@@ -31,7 +31,7 @@ export function esbuildPage({ js, css }) {
 <script>
 const __t0 = performance.now();
 ${js.replace(/<\/(script)/gi, '<\\/$1')}
-window.__rowpack = { engine: 'esbuild', totalMs: performance.now() - __t0 };
+window.__rowpack = { engine: 'esbuild', totalMs: performance.now() - __t0, readyAt: performance.now() };
 </script>
 </body></html>
 `;
@@ -40,7 +40,7 @@ window.__rowpack = { engine: 'esbuild', totalMs: performance.now() - __t0 };
 export async function buildPages(entry, outDir) {
   fs.mkdirSync(outDir, { recursive: true });
   const p = (n) => path.join(outDir, n);
-  build({ entry, out: p('app.sqlite') });
+  await build({ entry, out: p('app.sqlite') });
   const js = materialize(p('app.sqlite'));
   fs.writeFileSync(p('app.js'), js);
   fs.writeFileSync(p('sql.html'), sqlPage(p('app.sqlite')));

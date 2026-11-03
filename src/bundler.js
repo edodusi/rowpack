@@ -5,9 +5,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
+import { Worker } from 'node:worker_threads';
 import { transformModule } from './transform.js';
-import { resolve, hasSideEffects } from './resolve.js';
-import { SCHEMA, LINK, TREE_SHAKE } from './sql.js';
+import { resolve, hasSideEffects, clearResolveCache } from './resolve.js';
+import { SCHEMA, LINK, TREE_SHAKE, REFRESH_IMAGE } from './sql.js';
 import { runtimeSource } from './engines.js';
 
 const ASSET_TYPES = {
@@ -37,48 +38,19 @@ const TEXT_FORMATS = new Set(['json', 'css', 'text']);
  * @param {string} opts.entry
  * @param {string} opts.out          path of the .sqlite bundle
  * @param {boolean} [opts.treeShake] default true
- * @returns {{ out: string, stats: object, warnings: string[] }}
+ * @param {number} [opts.jobs]       compile workers; 1 = in this thread (default)
+ * @returns {Promise<{ out: string, stats: object, warnings: string[] }>}
  */
-export function build({ entry, out, treeShake = true }) {
+export async function build({ entry, out, treeShake = true, jobs = 1 }) {
   const t0 = performance.now();
+  clearResolveCache(); // caches live for one build: files may change between builds
   const entryPath = fs.realpathSync(path.resolve(entry));
   const root = path.dirname(entryPath);
   const warnings = [];
 
   // ---- 1. graph walk: parse every module exactly once -------------------
-  const ids = new Map(); // abs path -> id
-  const graph = []; // in id order
-  const queue = [entryPath];
-  ids.set(entryPath, 1);
-
-  for (let i = 0; i < queue.length; i++) {
-    const file = queue[i];
-    const ext = path.extname(file).toLowerCase();
-    const node = { id: i + 1, file, path: displayPath(file, root), format: null, transformed: null, asset: null, deps: [] };
-    graph.push(node);
-
-    const asset = ASSET_TYPES[ext];
-    if (asset) {
-      const [format, mime] = asset;
-      node.format = format;
-      node.asset = { mime, content: TEXT_FORMATS.has(format) ? fs.readFileSync(file, 'utf8') : fs.readFileSync(file) };
-      continue;
-    }
-
-    const t = transformModule(fs.readFileSync(file, 'utf8'), node.path);
-    node.format = t.format;
-    node.transformed = t;
-    warnings.push(...t.warnings);
-    for (const dep of t.deps) {
-      const target = resolve(dep.specifier, file);
-      if (!target) throw new Error(`${node.path}: cannot resolve "${dep.specifier}"`);
-      if (!ids.has(target)) {
-        ids.set(target, ids.size + 1);
-        queue.push(target);
-      }
-      node.deps.push(ids.get(target));
-    }
-  }
+  const graph = await walkGraph(entryPath, root, jobs);
+  for (const n of graph) if (n.transformed) warnings.push(...n.transformed.warnings);
   const tParse = performance.now();
 
   // ---- 2. rows ----------------------------------------------------------
@@ -138,6 +110,7 @@ export function build({ entry, out, treeShake = true }) {
     db.exec('COMMIT');
     assertLinked(db);
   }
+  db.exec(REFRESH_IMAGE);
   const tLink = performance.now();
 
   fs.mkdirSync(path.dirname(path.resolve(out)), { recursive: true });
@@ -155,6 +128,93 @@ export function build({ entry, out, treeShake = true }) {
       bytes: fs.statSync(out).size,
       ms: { parse: tParse - t0, insert: tInsert - tParse, linkAndShake: tLink - tInsert, write: tWrite - tLink, total: tWrite - t0 },
     },
+  };
+}
+
+/**
+ * Discover and transform every module. Transforms run in parallel when jobs > 1;
+ * ids are assigned afterwards in breadth-first import order, so the bundle is
+ * the same whatever order the workers finish in.
+ */
+async function walkGraph(entryPath, root, jobs) {
+  const nodes = new Map();
+  const pool = jobs > 1 ? createPool(jobs) : null;
+  const pending = new Set();
+  const transform = (file, id) => (pool ? pool.run(file, id) : Promise.resolve().then(() => transformModule(fs.readFileSync(file, 'utf8'), id)));
+
+  const visit = (file) => {
+    if (nodes.has(file)) return;
+    const node = { file, path: displayPath(file, root), format: null, transformed: null, asset: null, depFiles: [] };
+    nodes.set(file, node);
+    const asset = ASSET_TYPES[path.extname(file).toLowerCase()];
+    if (asset) {
+      const [format, mime] = asset;
+      node.format = format;
+      node.asset = { mime, content: TEXT_FORMATS.has(format) ? fs.readFileSync(file, 'utf8') : fs.readFileSync(file) };
+      return;
+    }
+    const job = transform(file, node.path).then((t) => {
+      node.format = t.format;
+      node.transformed = t;
+      for (const dep of t.deps) {
+        const target = resolve(dep.specifier, file);
+        if (!target) throw new Error(`${node.path}: cannot resolve "${dep.specifier}"`);
+        node.depFiles.push(target);
+        visit(target);
+      }
+    });
+    pending.add(job);
+    job.finally(() => pending.delete(job)).catch(() => {});
+  };
+
+  try {
+    visit(entryPath);
+    while (pending.size) await Promise.all(pending);
+  } finally {
+    pool?.close();
+  }
+
+  const graph = [];
+  const ids = new Map([[entryPath, 1]]);
+  for (let i = 0, queue = [entryPath]; i < queue.length; i++) {
+    const node = nodes.get(queue[i]);
+    node.id = i + 1;
+    graph.push(node);
+    for (const f of node.depFiles) {
+      if (!ids.has(f)) {
+        ids.set(f, ids.size + 1);
+        queue.push(f);
+      }
+    }
+    node.deps = node.depFiles.map((f) => ids.get(f));
+  }
+  return graph;
+}
+
+function createPool(size) {
+  const workers = Array.from({ length: size }, () => ({ w: new Worker(new URL('./worker.js', import.meta.url)), busy: 0 }));
+  const waiting = new Map();
+  let next = 0;
+  for (const { w } of workers) {
+    w.on('message', ({ job, result, error }) => {
+      const { resolve: ok, reject, slot } = waiting.get(job);
+      waiting.delete(job);
+      slot.busy--;
+      if (error) reject(new Error(error));
+      else ok(result);
+    });
+  }
+  return {
+    run(file, id) {
+      const slot = workers.reduce((a, b) => (b.busy < a.busy ? b : a));
+      slot.busy++;
+      const job = next++;
+      return new Promise((ok, reject) => {
+        waiting.set(job, { resolve: ok, reject, slot });
+        slot.w.postMessage({ job, file, id });
+      });
+    },
+    close: () => workers.forEach(({ w }) => w.terminate()),
   };
 }
 
