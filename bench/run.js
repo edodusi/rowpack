@@ -67,7 +67,7 @@ const step = (msg) => process.stderr.write(`${msg}\n`);
 
 const results = {
   date: new Date().toISOString(),
-  machine: { host: os.hostname(), cpu: os.cpus()[0].model, cores: os.cpus().length, os: `${os.type()} ${os.release()}`, node: process.version },
+  machine: { cpu: os.cpus()[0].model, cores: os.cpus().length, os: `${os.type()} ${os.release()}`, node: process.version },
   versions: { esbuild: esbuild.version, chrome: null },
   apps: {},
 };

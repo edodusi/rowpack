@@ -1,7 +1,6 @@
 {
   "date": "2026-11-03T15:41:02.400Z",
   "machine": {
-    "host": "c0c7db258a3f",
     "cpu": "Apple M5 Pro",
     "cores": 18,
     "os": "Darwin 25.6.0",
