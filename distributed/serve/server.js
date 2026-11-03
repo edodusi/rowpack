@@ -168,7 +168,8 @@ document.getElementById('status').innerHTML=${JSON.stringify(`<b>${cold ? 'You j
 async function servePage(res) {
   const ready = await readManifest();
   if (ready) {
-    res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'public, max-age=60' });
+    // browsers recheck every minute; CloudFront keeps it a day (deploy and serve-reset.sh invalidate it)
+    res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'public, max-age=60, s-maxage=86400' });
     res.end(`${head}<div id="status"></div>${finalHtml(ready, { cold: false })}</body></html>`);
     return;
   }

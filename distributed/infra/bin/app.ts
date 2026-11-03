@@ -219,7 +219,7 @@ class RowpackServeStack extends Stack {
       endpointType: 'HomeRegion',
       authType: 'IamAuth',
       revisionWeights: [{ revisionId: revision.attrRevisionId, weight: 100 }],
-      scalingConfig: { maxEnvironments: 4 },
+      scalingConfig: { maxEnvironments: 2 }, // the minimum: also the cap on idle memory cost
       throttleConfig: { rateLimit: 100 },
     });
     endpoint.addDependency(fn);

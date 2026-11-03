@@ -45,7 +45,7 @@ The first visitor's request reaches a Web Function through CloudFront. The funct
 
 Measured on the deployed stack: the first visit compiled 388 modules in 42 Lambda requests and built in 2.25 seconds; after a one-line change to the app, the next first visit compiled 1 module, reused 387 from S3, and built in 1.2 seconds. Cached visits take about 0.2 seconds.
 
-The page is public on purpose; nothing else is. The Web Function endpoint is `IamAuth` and only CloudFront's origin access control can sign for it (a resource policy scoped to the distribution); the bucket blocks public access and only serves `/builds/*` through CloudFront. The function only ever builds the one app in `serve/app`: nothing in a request can choose what gets compiled. Caps: 4 Web Function environments, 100 requests per second, 64 concurrent compiles.
+The page is public on purpose; nothing else is. The Web Function endpoint is `IamAuth` and only CloudFront's origin access control can sign for it (a resource policy scoped to the distribution); the bucket blocks public access and only serves `/builds/*` through CloudFront. The function only ever builds the one app in `serve/app`: nothing in a request can choose what gets compiled. Caps: 2 Web Function environments, 100 requests per second, 64 concurrent compiles.
 
 ## Run it
 
