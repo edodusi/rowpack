@@ -157,11 +157,11 @@ html,body{margin:0;height:100%;background:#0d1117;color:#c9d1d9;font:14px/1.5 ui
 progress{width:100%;height:8px;accent-color:#3fb950}
 </style></head><body><div id="root"></div>`;
 
-function finalHtml(m, { cold }) {
+function finalHtml(m, { cold, waited = false }) {
   const facts = `${m.modules.length} modules (of ${m.shaking.before} before tree-shaking), ` +
     `${m.compile.compiled} compiled on Lambda in ${m.compile.lambdaRequests} requests, ${m.compile.cached} reused from S3, built in ${m.buildMs} ms`;
   return `<script>window.__ROWPACK_BUILD__=${JSON.stringify({ modules: m.modules }).replace(/</g, '\\u003c')};
-document.getElementById('status').innerHTML=${JSON.stringify(`<b>${cold ? 'You just built this page.' : 'Built on first visit.'}</b><br>${esc(facts)}.<br><a href="/${prefix}/db.html">Open the bundle as a database</a>`)};</script>
+document.getElementById('status').innerHTML=${JSON.stringify(`<b>${waited ? 'Another visitor built this page while you waited.' : cold ? 'You just built this page.' : 'Built on first visit.'}</b><br>${esc(facts)}.<br><a href="/${prefix}/db.html">Open the bundle as a database</a>`)};</script>
 <script src="/${prefix}/app.js"></script>`;
 }
 
@@ -188,17 +188,19 @@ async function servePage(res) {
 
   try {
     let manifest;
+    let waited = false;
     if (!building && (await acquireLock())) {
       building = buildOnce(progress).finally(() => { building = null; });
       manifest = await building;
     } else {
       progress.phase = 'waiting';
+      waited = true;
       const until = Date.now() + 90_000;
       while (!(manifest = await readManifest()) && Date.now() < until) await new Promise((r) => setTimeout(r, 500));
       if (!manifest) throw new Error('the build did not finish in time; reload to try again');
     }
     clearInterval(tick);
-    res.end(`${finalHtml(manifest, { cold: true })}</body></html>`);
+    res.end(`${finalHtml(manifest, { cold: true, waited })}</body></html>`);
   } catch (err) {
     clearInterval(tick);
     console.error(err);
