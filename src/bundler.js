@@ -39,9 +39,11 @@ const TEXT_FORMATS = new Set(['json', 'css', 'text']);
  * @param {string} opts.out          path of the .sqlite bundle
  * @param {boolean} [opts.treeShake] default true
  * @param {number} [opts.jobs]       compile workers; 1 = in this thread (default)
+ * @param {{ run(file: string, id: string): Promise<object>, close(): void }} [opts.compiler]
+ *        where modules get compiled; overrides jobs (see distributed/)
  * @returns {Promise<{ out: string, stats: object, warnings: string[] }>}
  */
-export async function build({ entry, out, treeShake = true, jobs = 1 }) {
+export async function build({ entry, out, treeShake = true, jobs = 1, compiler = null }) {
   const t0 = performance.now();
   clearResolveCache(); // caches live for one build: files may change between builds
   const entryPath = fs.realpathSync(path.resolve(entry));
@@ -49,7 +51,7 @@ export async function build({ entry, out, treeShake = true, jobs = 1 }) {
   const warnings = [];
 
   // ---- 1. graph walk: parse every module exactly once -------------------
-  const graph = await walkGraph(entryPath, root, jobs);
+  const graph = await walkGraph(entryPath, root, compiler ?? (jobs > 1 ? createPool(jobs) : null));
   for (const n of graph) if (n.transformed) warnings.push(...n.transformed.warnings);
   const tParse = performance.now();
 
@@ -136,9 +138,8 @@ export async function build({ entry, out, treeShake = true, jobs = 1 }) {
  * ids are assigned afterwards in breadth-first import order, so the bundle is
  * the same whatever order the workers finish in.
  */
-async function walkGraph(entryPath, root, jobs) {
+async function walkGraph(entryPath, root, pool) {
   const nodes = new Map();
-  const pool = jobs > 1 ? createPool(jobs) : null;
   const pending = new Set();
   const transform = (file, id) => (pool ? pool.run(file, id) : Promise.resolve().then(() => transformModule(fs.readFileSync(file, 'utf8'), id)));
 

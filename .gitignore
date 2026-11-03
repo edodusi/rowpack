@@ -3,3 +3,6 @@ dist/
 *.log
 .bench/
 demos/todomvc/app/
+distributed/dist/
+distributed/outputs.json
+distributed/infra/cdk.out/
