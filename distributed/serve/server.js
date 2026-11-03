@@ -139,12 +139,11 @@ async function acquireLock() {
   }
 }
 
-let manifestCache = null;
+// Read from S3 on every page request (CloudFront absorbs the traffic), so
+// emptying the bucket with serve-reset.sh makes the next visit a first visit.
 async function readManifest() {
-  if (manifestCache) return manifestCache;
   const m = await getText(`${prefix}/manifest.json`);
-  if (m) manifestCache = JSON.parse(m.toString('utf8'));
-  return manifestCache;
+  return m ? JSON.parse(m.toString('utf8')) : null;
 }
 
 // ---- pages -----------------------------------------------------------------
