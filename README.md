@@ -1,142 +1,79 @@
-# SQLBundle (SELF-JS) — "Your Executable is a SQLite Database"
+# rowpack
 
-An experimental JavaScript bundler inspired by Farid Zakaria's article [Your executable is a SQLite database](https://fzakaria.com/2026/08/23/your-executable-is-a-sqlite-database).
+A toy JavaScript bundler whose output is a SQLite database.
 
-Instead of producing a monolithic JavaScript file with hardcoded module dictionaries (like Webpack, Rollup, or esbuild), **SQLBundle** compiles an ES6 module graph into a **first-class SQLite database**.
+Inspired by Farid Zakaria's post [Your executable is a SQLite database](https://fzakaria.com/2026/08/23/your-executable-is-a-sqlite-database), which asks what falls out if ELF were SQLite. rowpack asks the same of a JavaScript bundle: modules, statements, bindings, imports and exports are rows, and the linker, the tree-shaker and the patcher are SQL queries.
 
-The output bundle:
-- Is an authentic SQLite 3 database (`PRAGMA application_id = 0x53514c42`, ASCII `"SQLB"`).
-- Stores modules, symbols, and dependencies in relational tables.
-- Performs all dynamic linking, symbol lookup, and module resolution **via SQL queries**.
-- Runs in **Node.js** (using native `node:sqlite`) and in **Web Browsers** (using embedded **SQLite WebAssembly** with zero external network dependencies).
-- Can be inspected and manipulated using the standard `sqlite3` CLI tool.
+It is a toy. It is also correct on the things it claims, and the numbers below are measured, not estimated.
 
----
-
-## Conceptual Mapping: ELF vs. SQLBundle
-
-| ELF / Standard Bundler Concept | SQLBundle SQLite Equivalent |
-| :--- | :--- |
-| ELF Header / Bundler Manifest | `bundle_meta` table (`entry_point`, `application_id`, `bundler`, etc.) |
-| Object files / Chunks | `modules` table (`id`, `path`, `code`, `is_entry`, `size`) |
-| `DT_NEEDED` (Dynamic libraries) | `dependencies` table (`importer_id`, `specifier`, `resolved_module_id`) |
-| `.dynsym` / Symbol table | `symbols` table (`module_id`, `name`, `kind`, `local_name`) |
-| `.hash` / `.gnu.hash` | SQLite B-tree indexes (`idx_modules_path`, `idx_deps_importer`, etc.) |
-| `ldd` command | `CREATE VIEW ldd AS SELECT ...` |
-| `nm -D` (exports & imports) | `CREATE VIEW exports` and `CREATE VIEW imports` |
-| `strip(1)` / Tree-Shaking | `DELETE FROM modules WHERE id NOT IN (WITH RECURSIVE reachable...); VACUUM;` |
-| `patchelf(1)` | `UPDATE dependencies SET resolved_module_id = ... WHERE specifier = ...;` |
-| Linker lookup in code | `SELECT code FROM modules WHERE id = ?;` |
-| Ahead-Of-Time Materialized Runtime | `CREATE VIEW js_output AS SELECT code FROM js_bundle;` |
-
----
-
-## Installation & Quick Start
-
-```bash
-# Clone and install dependencies
+```sh
 npm install
-
-# Run the test suite
-npm test
+rowpack build demos/hello/index.js -o hello.sqlite --js hello.js --html hello.html --inspector
+rowpack run hello.sqlite                      # the dynamic linker queries the database
+node hello.js                                 # or run the statically linked script
+sqlite3 hello.sqlite "SELECT * FROM ldd"      # or just look inside
 ```
 
-### 1. Build an ES6 Project into SQLite
+## What is in the database
 
-```bash
-./bin/sqlbundle.js build demo-app/src/index.js -o dist/demo.sqlite --html dist/demo.html
+| Table or view | ELF analogy | What it holds |
+|---|---|---|
+| `modules`, `assets` | object files | one row per module; CSS, SVG, JSON and binaries as TEXT or BLOB |
+| `statements` | `.text` | top-level statements, the unit of tree-shaking |
+| `bindings`, `refs` | `.symtab` | which statement declares and reads which binding |
+| `relocations` | `.rela` | every place code names a binding, by offset |
+| `dependencies` | `DT_NEEDED` | import specifiers and what they resolved to |
+| `exports`, `linked_exports` | `.dynsym` | exports as written, and after linking |
+| `load_image` | program headers | what the loader reads, one row per module |
+| `ldd`, `symbols`, `imports`, `unresolved_imports`, `module_sizes` | `ldd`, `nm` | views |
+
+`PRAGMA application_id` is `0x524f5750` ("ROWP").
+
+## What the SQL does
+
+- **Linking** is the spec's ResolveExport as a recursive CTE: it follows re-export chains and `export *` to the binding that owns each name, and drops names that two stars make ambiguous.
+- **Tree-shaking** is a second recursive CTE that walks from side effects and used exports through statement and binding rows. It honours `"sideEffects": false`. On lodash-es it keeps 157 of 641 modules and 456 of 1,927 statements, the same module set esbuild keeps.
+- **Patching** (`rowpack patch --redirect` or `--replace`) changes rows in one transaction, relinks, and rolls back if anything no longer resolves.
+- **The SQL engine** loads everything the entry needs with one recursive query and links it at runtime, in Node (`node:sqlite`) or in the browser ([sql.js](https://sql.js.org/)).
+- **The static linker** turns the rows into one flat script: modules in ESM evaluation order in one scope, unique names, every relocation patched to a direct reference. That is the output you would ship.
+- **strip** drops the link-edit tables. The bundle still runs and `ldd` still works.
+
+## Correctness
+
+The tests compare against Node's own ESM loader: live bindings, cycles, TDZ errors, `export *` conflicts, default export forms, evaluation order, shadowing, `import()`, namespace objects, string export names and JSON imports. Every fixture runs through the SQL engine, the static script and the dynamic script, with and without tree-shaking. TodoMVC Vanilla ES6 renders and behaves identically in headless Chrome whether esbuild or rowpack built it.
+
+```sh
+npm test                          # 146 tests
+node demos/todomvc/prepare.js     # fetches TodoMVC (GPL-3.0, not vendored) for the browser test
 ```
 
-This generates:
-- `dist/demo.sqlite`: Pure SQLite database binary executable.
-- `dist/demo.html`: Browser executable containing embedded SQLite WebAssembly runtime, the bundled database, and a live inspection HUD.
+## Numbers
 
-### 2. Inspect with Native `sqlite3` CLI
+Apple M5 Pro, Node 26, esbuild 0.28, Chrome 156. Medians. Full report in [`bench/results`](bench/results/), reproduce with `node bench/run.js`.
 
-Because the bundle is an authentic SQLite database, you can query it with any SQLite client:
+| | TodoMVC | lodash-es, 5 functions | lodash-es, all |
+|---|---:|---:|---:|
+| Build, rowpack (warm) | 32 ms | 129 ms | 120 ms |
+| Build, esbuild (warm) | 14 ms | 64 ms | 59 ms |
+| Build, original prototype | 172 ms | 2,807 ms | 2,410 ms |
+| Minified + brotli, rowpack static | 243.0 KB | 8.3 KB | 30.6 KB |
+| Minified + brotli, esbuild | 240.6 KB | 8.5 KB | 30.2 KB |
+| Chrome app ready, esbuild | 26 ms | 10 ms | 19 ms |
+| Chrome app ready, rowpack static | 29 ms | 9 ms | 21 ms |
+| Chrome app ready, rowpack SQL engine | 63 ms | 40 ms | 59 ms |
 
-```bash
-# View dynamic dependencies (ldd)
-sqlite3 dist/demo.sqlite "SELECT * FROM ldd;"
+Minified sizes use esbuild's minifier on both outputs, so the comparison is about bundling, not minification. TodoMVC's output is mostly a WAV file and SVGs. The SQL engine page also ships 685 KB of SQLite compiled to WebAssembly, which takes 14 to 19 ms to start before any module is linked.
 
-# View exported symbols (nm -D)
-sqlite3 dist/demo.sqlite "SELECT * FROM exports;"
+What this says: as a database, the bundle is a nice thing to query and a slow thing to boot. Linked statically, it is roughly as small and as fast as esbuild's output, and esbuild still builds about twice as fast.
 
-# View application ID (0x53514c42 == 'SQLB')
-xxd -s 64 -l 8 dist/demo.sqlite
-```
+## Limits
 
-### 3. Run in the Terminal (CLI)
+No source maps, no code splitting, no top-level await, no JSX or TypeScript, no minifier. CommonJS modules are wrapped, not tree-shaken. Static linking falls back to the dynamic runtime for `eval`, CommonJS requiring ESM, and `import()` of modules nothing imports statically.
 
-```bash
-./bin/sqlbundle.js run dist/demo.sqlite
-```
+## How this was built
 
-### 4. Run in the Browser
+The first prototype was written by an AI agent (Gemini in Antigravity). I then rewrote it with Kiro Crew as my assistant: a strict test suite against Node first, then fixes, then measured optimizations. The commit history starts from the untouched prototype so you can see the difference.
 
-Open `dist/demo.html` directly in any web browser, or serve it via any static HTTP server:
+## License
 
-```bash
-python3 -m http.server 8080 --directory dist
-```
-
-Navigate to `http://localhost:8080/demo.html`.
-The page will:
-1. Boot SQLite inside WebAssembly.
-2. Query the SQLite database to resolve and link the ES6 modules.
-3. Render the application UI.
-4. Provide an interactive **SQLite HUD Inspector** with real-time logs, dependency graph (`ldd`), symbol table, and an interactive SQL query terminal!
-
----
-
-## Bundler CLI Operations
-
-### Tree-Shaking (`strip`)
-
-Removes unreferenced modules and vacuums the database:
-
-```bash
-./bin/sqlbundle.js strip dist/demo.sqlite
-```
-
-### Dependency Hot-Patching (`patch`)
-
-Redirects a dependency specifier in-place without rebuilding:
-
-```bash
-./bin/sqlbundle.js patch dist/demo.sqlite --redirect ./math.js=./mock_math.js
-```
-
-### Ad-hoc SQL Querying (`query`)
-
-```bash
-./bin/sqlbundle.js query dist/demo.sqlite "SELECT path, size FROM modules ORDER BY size DESC;"
-```
-
----
-
-## Combining SQLite Build with Blazing Fast Runtime Execution
-
-To achieve Webpack/esbuild execution speeds without the runtime overhead of a WebAssembly SQL virtual machine, SQLBundle supports **Ahead-Of-Time Materialization**:
-
-### 1. Zero-Overhead Pure JS Output
-Every build automatically materializes a pure JavaScript bundle:
-```bash
-# Run pure JS bundle with native V8 O(1) performance (0 SQL queries)
-node dist/demo.js
-
-# Or run via CLI with --fast flag
-./bin/sqlbundle.js run dist/demo.sqlite --fast
-```
-
-### 2. Extracting JS directly from SQLite CLI
-Because the materialized code is stored directly in the database, you can extract a production-ready JavaScript bundle using standard `sqlite3`:
-```bash
-sqlite3 dist/demo.sqlite "SELECT code FROM js_output;" > production-bundle.js
-```
-
-### 3. Re-materializing after Hot-Patching
-If you mutate dependencies in SQLite (`sqlbundle patch`), re-materialize the JS bundle in < 1ms:
-```bash
-./bin/sqlbundle.js emit-js dist/demo.sqlite -o dist/demo.js
-```
+MIT

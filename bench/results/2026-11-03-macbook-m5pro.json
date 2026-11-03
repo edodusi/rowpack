@@ -1,0 +1,431 @@
+{
+  "date": "2026-11-03T15:41:02.400Z",
+  "machine": {
+    "host": "c0c7db258a3f",
+    "cpu": "Apple M5 Pro",
+    "cores": 18,
+    "os": "Darwin 25.6.0",
+    "node": "v26.10.0",
+    "label": "macbook-m5pro"
+  },
+  "versions": {
+    "esbuild": "0.28.2",
+    "chrome": "156.0.8078.80"
+  },
+  "apps": {
+    "todomvc": {
+      "build": {
+        "rowpack_sqlite_ms": 31.888083999999935,
+        "rowpack_sqlite_plus_js_ms": 34.55883199999994,
+        "esbuild_ms": 14.146458999999993,
+        "rowpack_jobs8_sqlite_ms": 70.11041699999987,
+        "rowpack_phases_ms": {
+          "parse": 21.305417000000034,
+          "insert": 3.854041999999936,
+          "linkAndShake": 2.850791000000072,
+          "write": 2.2618340000000217,
+          "total": 30.272084000000063
+        },
+        "modules": 53,
+        "modules_before_shaking": 53,
+        "statements": 80,
+        "statements_before_shaking": 81,
+        "cold_cli_rowpack_ms": 107.08120899999994,
+        "cold_cli_esbuild_ms": 22.22245900000007,
+        "prototype_ms": 172.2,
+        "prototype_error": null
+      },
+      "size": {
+        "prototype_sqlite": 8396800,
+        "prototype_js": {
+          "raw": 1058541,
+          "gzip": 353575,
+          "brotli": 311943
+        },
+        "sqlite": 1245184,
+        "sqlite_stripped": 851968,
+        "rowpack_static": {
+          "raw": 811393,
+          "gzip": 288385,
+          "brotli": 260701
+        },
+        "rowpack_static_minified": {
+          "raw": 640969,
+          "gzip": 270727,
+          "brotli": 248870
+        },
+        "rowpack_dynamic": {
+          "raw": 828689,
+          "gzip": 293173,
+          "brotli": 263774
+        },
+        "rowpack_dynamic_minified": {
+          "raw": 656434,
+          "gzip": 274315,
+          "brotli": 250970
+        },
+        "esbuild": {
+          "raw": 772446,
+          "gzip": 279753,
+          "brotli": 253585
+        },
+        "esbuild_minified": {
+          "raw": 623851,
+          "gzip": 268048,
+          "brotli": 246361
+        },
+        "page_esbuild": {
+          "raw": 772771,
+          "gzip": 278993,
+          "brotli": 255395
+        },
+        "page_static": {
+          "raw": 811779,
+          "gzip": 288598,
+          "brotli": 260956
+        },
+        "page_dynamic": {
+          "raw": 829075,
+          "gzip": 293438,
+          "brotli": 264218
+        },
+        "page_sql": {
+          "raw": 2104650,
+          "gzip": 817098,
+          "brotli": 688351
+        }
+      },
+      "browser": {
+        "esbuild": {
+          "ready_at_ms": 25.899999976158142,
+          "script_ms": 12.400000035762787,
+          "load_event_ms": 29.5
+        },
+        "esbuild_cpu4x": {
+          "ready_at_ms": 91.55000001192093,
+          "script_ms": 50.599999994039536,
+          "load_event_ms": 107.90000000596046
+        },
+        "static": {
+          "ready_at_ms": 29.19999998807907,
+          "script_ms": 14,
+          "load_event_ms": 33.5
+        },
+        "static_cpu4x": {
+          "ready_at_ms": 104.34999999403954,
+          "script_ms": 56.599999994039536,
+          "load_event_ms": 122.75000002980232
+        },
+        "dynamic": {
+          "ready_at_ms": 30.69999998807907,
+          "script_ms": 15.099999964237213,
+          "load_event_ms": 33.80000001192093
+        },
+        "dynamic_cpu4x": {
+          "ready_at_ms": 107.15000000596046,
+          "script_ms": 63.04999998211861,
+          "load_event_ms": 125.55000001192093
+        },
+        "sql": {
+          "ready_at_ms": 63.30000001192093,
+          "script_ms": 44.80000001192093,
+          "load_event_ms": 24.5,
+          "sqlite_ready_ms": 18.69999998807907,
+          "link_and_run_ms": 25.69999998807907,
+          "query_ms": 2.800000011920929,
+          "compile_ms": 1.699999988079071
+        },
+        "sql_cpu4x": {
+          "ready_at_ms": 265.94999998807907,
+          "script_ms": 204.80000004172325,
+          "load_event_ms": 89.39999997615814,
+          "sqlite_ready_ms": 96.4500000178814,
+          "link_and_run_ms": 108.4500000178814,
+          "query_ms": 12.399999976158142,
+          "compile_ms": 7.1500000059604645
+        }
+      },
+      "node": {}
+    },
+    "lodash-few": {
+      "build": {
+        "rowpack_sqlite_ms": 129.08412500000122,
+        "rowpack_sqlite_plus_js_ms": 132.91841700000077,
+        "esbuild_ms": 63.62029099999927,
+        "rowpack_jobs8_sqlite_ms": 106.42520800000057,
+        "rowpack_phases_ms": {
+          "parse": 101.05929099999776,
+          "insert": 32.97462500000256,
+          "linkAndShake": 16.9854589999959,
+          "write": 2.313041000001249,
+          "total": 153.33241599999747
+        },
+        "modules": 157,
+        "modules_before_shaking": 641,
+        "statements": 456,
+        "statements_before_shaking": 1927,
+        "cold_cli_rowpack_ms": 213.4942499999961,
+        "cold_cli_esbuild_ms": 82.4467500000028,
+        "prototype_ms": 2806.59,
+        "prototype_error": null
+      },
+      "size": {
+        "prototype_sqlite": 8929280,
+        "prototype_js": {
+          "raw": 1163045,
+          "gzip": 168345,
+          "brotli": 108780
+        },
+        "sqlite": 499712,
+        "sqlite_stripped": 241664,
+        "rowpack_static": {
+          "raw": 70579,
+          "gzip": 16215,
+          "brotli": 14020
+        },
+        "rowpack_static_minified": {
+          "raw": 25013,
+          "gzip": 9704,
+          "brotli": 8505
+        },
+        "rowpack_dynamic": {
+          "raw": 117374,
+          "gzip": 21211,
+          "brotli": 17664
+        },
+        "rowpack_dynamic_minified": {
+          "raw": 63081,
+          "gzip": 14841,
+          "brotli": 12744
+        },
+        "esbuild": {
+          "raw": 71311,
+          "gzip": 15139,
+          "brotli": 13093
+        },
+        "esbuild_minified": {
+          "raw": 25111,
+          "gzip": 9924,
+          "brotli": 8705
+        },
+        "page_esbuild": {
+          "raw": 71636,
+          "gzip": 15363,
+          "brotli": 13196
+        },
+        "page_static": {
+          "raw": 70965,
+          "gzip": 16467,
+          "brotli": 14151
+        },
+        "page_dynamic": {
+          "raw": 117760,
+          "gzip": 21460,
+          "brotli": 17813
+        },
+        "page_sql": {
+          "raw": 1290910,
+          "gzip": 501355,
+          "brotli": 413191
+        }
+      },
+      "browser": {
+        "esbuild": {
+          "ready_at_ms": 10,
+          "script_ms": 2.699999988079071,
+          "load_event_ms": 10.300000011920929
+        },
+        "esbuild_cpu4x": {
+          "ready_at_ms": 31.05000001192093,
+          "script_ms": 11.199999988079071,
+          "load_event_ms": 32.25
+        },
+        "static": {
+          "ready_at_ms": 8.600000023841858,
+          "script_ms": 2.799999952316284,
+          "load_event_ms": 8.800000011920929
+        },
+        "static_cpu4x": {
+          "ready_at_ms": 31.749999970197678,
+          "script_ms": 12.549999982118607,
+          "load_event_ms": 33.29999998211861
+        },
+        "dynamic": {
+          "ready_at_ms": 11.399999976158142,
+          "script_ms": 4.699999988079071,
+          "load_event_ms": 11.599999964237213
+        },
+        "dynamic_cpu4x": {
+          "ready_at_ms": 42.099999994039536,
+          "script_ms": 21,
+          "load_event_ms": 43.400000005960464
+        },
+        "sql": {
+          "ready_at_ms": 39.80000001192093,
+          "script_ms": 27.099999964237213,
+          "load_event_ms": 16.600000023841858,
+          "sqlite_ready_ms": 13.800000011920929,
+          "link_and_run_ms": 13.399999976158142,
+          "query_ms": 2.899999976158142,
+          "compile_ms": 1
+        },
+        "sql_cpu4x": {
+          "ready_at_ms": 171.30000001192093,
+          "script_ms": 126.39999997615814,
+          "load_event_ms": 72.40000000596046,
+          "sqlite_ready_ms": 72.64999997615814,
+          "link_and_run_ms": 54.05000001192093,
+          "query_ms": 12.099999994039536,
+          "compile_ms": 4.1500000059604645
+        }
+      },
+      "node": {
+        "sql_engine_ms": 1.2423750000016298,
+        "sql_queries": 1,
+        "static_ms": 0.2321460000021034,
+        "dynamic_ms": 0.49252100000012433,
+        "esbuild_ms": 0.20877049999762676
+      }
+    },
+    "lodash-all": {
+      "build": {
+        "rowpack_sqlite_ms": 120.10091700000339,
+        "rowpack_sqlite_plus_js_ms": 134.19529200000397,
+        "esbuild_ms": 59.10266700001375,
+        "rowpack_jobs8_sqlite_ms": 101.78383299999405,
+        "rowpack_phases_ms": {
+          "parse": 65.81854199999361,
+          "insert": 29.788375000003725,
+          "linkAndShake": 20.263749999998254,
+          "write": 3.496041000005789,
+          "total": 119.36670800000138
+        },
+        "modules": 641,
+        "modules_before_shaking": 641,
+        "statements": 1921,
+        "statements_before_shaking": 1921,
+        "cold_cli_rowpack_ms": 217.79220900000655,
+        "cold_cli_esbuild_ms": 75.99916700000176,
+        "prototype_ms": 2409.59,
+        "prototype_error": null
+      },
+      "size": {
+        "prototype_sqlite": 8929280,
+        "prototype_js": {
+          "raw": 1162685,
+          "gzip": 168245,
+          "brotli": 108706
+        },
+        "sqlite": 1765376,
+        "sqlite_stripped": 811008,
+        "rowpack_static": {
+          "raw": 304397,
+          "gzip": 60629,
+          "brotli": 48823
+        },
+        "rowpack_static_minified": {
+          "raw": 104141,
+          "gzip": 36211,
+          "brotli": 31301
+        },
+        "rowpack_dynamic": {
+          "raw": 509718,
+          "gzip": 81846,
+          "brotli": 56708
+        },
+        "rowpack_dynamic_minified": {
+          "raw": 281755,
+          "gzip": 59413,
+          "brotli": 43025
+        },
+        "esbuild": {
+          "raw": 302771,
+          "gzip": 56852,
+          "brotli": 45334
+        },
+        "esbuild_minified": {
+          "raw": 97999,
+          "gzip": 36062,
+          "brotli": 30919
+        },
+        "page_esbuild": {
+          "raw": 303096,
+          "gzip": 57083,
+          "brotli": 45486
+        },
+        "page_static": {
+          "raw": 304783,
+          "gzip": 60867,
+          "brotli": 48959
+        },
+        "page_dynamic": {
+          "raw": 510104,
+          "gzip": 82121,
+          "brotli": 56874
+        },
+        "page_sql": {
+          "raw": 2050034,
+          "gzip": 663936,
+          "brotli": 522856
+        }
+      },
+      "browser": {
+        "esbuild": {
+          "ready_at_ms": 18.5,
+          "script_ms": 7.900000035762787,
+          "load_event_ms": 18.899999976158142
+        },
+        "esbuild_cpu4x": {
+          "ready_at_ms": 69.15000003576279,
+          "script_ms": 35.45000001788139,
+          "load_event_ms": 70.9500000178814
+        },
+        "static": {
+          "ready_at_ms": 21.399999976158142,
+          "script_ms": 9.5,
+          "load_event_ms": 21.80000001192093
+        },
+        "static_cpu4x": {
+          "ready_at_ms": 77,
+          "script_ms": 41.599999994039536,
+          "load_event_ms": 78.24999997019768
+        },
+        "dynamic": {
+          "ready_at_ms": 30,
+          "script_ms": 17.19999998807907,
+          "load_event_ms": 30.5
+        },
+        "dynamic_cpu4x": {
+          "ready_at_ms": 118.55000004172325,
+          "script_ms": 73.75000002980232,
+          "load_event_ms": 120.30000001192093
+        },
+        "sql": {
+          "ready_at_ms": 58.60000002384186,
+          "script_ms": 43.200000047683716,
+          "load_event_ms": 21.19999998807907,
+          "sqlite_ready_ms": 19,
+          "link_and_run_ms": 24.30000001192093,
+          "query_ms": 6.699999988079071,
+          "compile_ms": 2.900000035762787
+        },
+        "sql_cpu4x": {
+          "ready_at_ms": 243.30000001192093,
+          "script_ms": 187.65000000596046,
+          "load_event_ms": 85.44999998807907,
+          "sqlite_ready_ms": 92.5499999821186,
+          "link_and_run_ms": 94.75,
+          "query_ms": 25.049999982118607,
+          "compile_ms": 11.300000011920929
+        }
+      },
+      "node": {
+        "sql_engine_ms": 3.696146000002045,
+        "sql_queries": 1,
+        "static_ms": 0.8884164999981294,
+        "dynamic_ms": 1.7515830000047572,
+        "esbuild_ms": 0.8914999999979045
+      }
+    }
+  }
+}
