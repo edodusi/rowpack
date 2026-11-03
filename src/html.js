@@ -7,6 +7,7 @@
 import fs from 'node:fs';
 import { createRequire } from 'node:module';
 import { runtimeSource } from './engines.js';
+import { INSPECTOR } from './inspector.js';
 
 const require = createRequire(import.meta.url);
 const scriptSafe = (js) => js.replace(/<\/(script)/gi, '<\\/$1');
@@ -23,7 +24,7 @@ ${body}
 `;
 }
 
-export function sqlPage(sqliteFile, title = 'rowpack') {
+export function sqlPage(sqliteFile, title = 'rowpack', { inspector = false } = {}) {
   const sqlJs = fs.readFileSync(require.resolve('sql.js/dist/sql-wasm.js'), 'utf8');
   const wasm = fs.readFileSync(require.resolve('sql.js/dist/sql-wasm.wasm')).toString('base64');
   const bundle = fs.readFileSync(sqliteFile).toString('base64');
@@ -53,7 +54,7 @@ export function sqlPage(sqliteFile, title = 'rowpack') {
   const tDone = performance.now();
   window.__rowpack = { engine: 'sql', db, ...source.stats, sqliteReadyMs: tReady - t0, linkAndRunMs: tDone - tReady, totalMs: tDone - t0, readyAt: tDone };
 })().catch((e) => { window.__rowpackError = String(e && e.stack || e); throw e; });
-</script>`);
+</script>${inspector ? INSPECTOR : ''}`);
 }
 
 export function fastPage(js, title = 'rowpack') {

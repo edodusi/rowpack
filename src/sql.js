@@ -177,6 +177,16 @@ SELECT m.path AS module, x.name AS export, o.path AS defined_in, coalesce(x.orig
 FROM linked_exports x JOIN modules m ON m.id = x.module_id JOIN modules o ON o.id = x.origin_id
 ORDER BY m.path, x.name;
 
+-- nm -u: what each module imports, and from where
+CREATE VIEW imports AS
+SELECT DISTINCT m.path AS module, r.name AS import, coalesce(t.path, '<unresolved>') AS from_module
+FROM refs r
+JOIN modules m ON m.id = r.module_id
+JOIN dependencies d ON d.importer_id = r.module_id AND d.idx = r.dep_idx
+LEFT JOIN modules t ON t.id = d.resolved_id
+WHERE r.kind = 'import'
+ORDER BY m.path, r.name;
+
 -- the link errors Node would throw as SyntaxError
 CREATE VIEW unresolved_imports AS
 SELECT DISTINCT m.path AS module, r.name AS import, t.path AS from_module

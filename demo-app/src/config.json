@@ -1,5 +1,0 @@
-{
-  "appName": "SQLBundle Test Suite",
-  "version": "1.0.0",
-  "features": ["es6", "sqlite", "node_modules", "css", "assets"]
-}

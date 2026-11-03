@@ -9,7 +9,7 @@ import { redirect, replace, shake, strip } from './patch.js';
 
 const USAGE = `rowpack: a JavaScript bundler whose output is a SQLite database
 
-  rowpack build <entry.js> -o <bundle.sqlite> [--js <out.js>] [--html <out.html>] [--fast-html <out.html>] [--no-tree-shake] [--strip] [--jobs [N]]
+  rowpack build <entry.js> -o <bundle.sqlite> [--js <out.js>] [--html <out.html>] [--fast-html <out.html>] [--inspector] [--no-tree-shake] [--strip] [--jobs [N]]
   rowpack run <bundle.sqlite | bundle.js>
   rowpack emit <bundle.sqlite> -o <out.js> [--engine static|dynamic]
   rowpack shake <bundle.sqlite>
@@ -52,7 +52,7 @@ export async function main(argv) {
         if (f['fast-html']) fs.writeFileSync(f['fast-html'], fastPage(js, path.basename(target)));
       }
       if (f.strip) strip(f.out);
-      if (f.html) fs.writeFileSync(f.html, sqlPage(f.out, path.basename(target)));
+      if (f.html) fs.writeFileSync(f.html, sqlPage(f.out, path.basename(target), { inspector: Boolean(f.inspector) }));
       console.error(
         `built ${f.out} (${kb(stats.bytes)}) in ${stats.ms.total.toFixed(1)} ms: ` +
         `${stats.after.modules}/${stats.before.modules} modules, ${stats.after.statements}/${stats.before.statements} statements kept`,
