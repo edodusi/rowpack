@@ -1,0 +1,2134 @@
+@charset "UTF-8";
+/*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
+/* Document
+   ========================================================================== */
+/**
+ * 1. Correct the line height in all browsers.
+ * 2. Prevent adjustments of font size after orientation changes in iOS.
+ */
+html {
+  line-height: 1.15; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+}
+
+/* Sections
+   ========================================================================== */
+/**
+ * Remove the margin in all browsers.
+ */
+body {
+  margin: 0;
+}
+
+/**
+ * Render the `main` element consistently in IE.
+ */
+main {
+  display: block;
+}
+
+/**
+ * Correct the font size and margin on `h1` elements within `section` and
+ * `article` contexts in Chrome, Firefox, and Safari.
+ */
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+
+/* Grouping content
+   ========================================================================== */
+/**
+ * 1. Add the correct box sizing in Firefox.
+ * 2. Show the overflow in Edge and IE.
+ */
+hr {
+  box-sizing: content-box; /* 1 */
+  height: 0; /* 1 */
+  overflow: visible; /* 2 */
+}
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+pre {
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/* Text-level semantics
+   ========================================================================== */
+/**
+ * Remove the gray background on active links in IE 10.
+ */
+a {
+  background-color: transparent;
+}
+
+/**
+ * 1. Remove the bottom border in Chrome 57-
+ * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.
+ */
+abbr[title] {
+  border-bottom: none; /* 1 */
+  text-decoration: underline; /* 2 */
+  text-decoration: underline dotted; /* 2 */
+}
+
+/**
+ * Add the correct font weight in Chrome, Edge, and Safari.
+ */
+b,
+strong {
+  font-weight: bolder;
+}
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+code,
+kbd,
+samp {
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/**
+ * Add the correct font size in all browsers.
+ */
+small {
+  font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` elements from affecting the line height in
+ * all browsers.
+ */
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/* Embedded content
+   ========================================================================== */
+/**
+ * Remove the border on images inside links in IE 10.
+ */
+img {
+  border-style: none;
+}
+
+/* Forms
+   ========================================================================== */
+/**
+ * 1. Change the font styles in all browsers.
+ * 2. Remove the margin in Firefox and Safari.
+ */
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  line-height: 1.15; /* 1 */
+  margin: 0; /* 2 */
+}
+
+/**
+ * Show the overflow in IE.
+ * 1. Show the overflow in Edge.
+ */
+button,
+input {
+  /* 1 */
+  overflow: visible;
+}
+
+/**
+ * Remove the inheritance of text transform in Edge, Firefox, and IE.
+ * 1. Remove the inheritance of text transform in Firefox.
+ */
+button,
+select {
+  /* 1 */
+  text-transform: none;
+}
+
+/**
+ * Correct the inability to style clickable types in iOS and Safari.
+ */
+button,
+[type=button],
+[type=reset],
+[type=submit] {
+  -webkit-appearance: button;
+}
+
+/**
+ * Remove the inner border and padding in Firefox.
+ */
+button::-moz-focus-inner,
+[type=button]::-moz-focus-inner,
+[type=reset]::-moz-focus-inner,
+[type=submit]::-moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+
+/**
+ * Restore the focus styles unset by the previous rule.
+ */
+button:-moz-focusring,
+[type=button]:-moz-focusring,
+[type=reset]:-moz-focusring,
+[type=submit]:-moz-focusring {
+  outline: 1px dotted ButtonText;
+}
+
+/**
+ * Correct the padding in Firefox.
+ */
+fieldset {
+  padding: 0.35em 0.75em 0.625em;
+}
+
+/**
+ * 1. Correct the text wrapping in Edge and IE.
+ * 2. Correct the color inheritance from `fieldset` elements in IE.
+ * 3. Remove the padding so developers are not caught out when they zero out
+ *    `fieldset` elements in all browsers.
+ */
+legend {
+  box-sizing: border-box; /* 1 */
+  color: inherit; /* 2 */
+  display: table; /* 1 */
+  max-width: 100%; /* 1 */
+  padding: 0; /* 3 */
+  white-space: normal; /* 1 */
+}
+
+/**
+ * Add the correct vertical alignment in Chrome, Firefox, and Opera.
+ */
+progress {
+  vertical-align: baseline;
+}
+
+/**
+ * Remove the default vertical scrollbar in IE 10+.
+ */
+textarea {
+  overflow: auto;
+}
+
+/**
+ * 1. Add the correct box sizing in IE 10.
+ * 2. Remove the padding in IE 10.
+ */
+[type=checkbox],
+[type=radio] {
+  box-sizing: border-box; /* 1 */
+  padding: 0; /* 2 */
+}
+
+/**
+ * Correct the cursor style of increment and decrement buttons in Chrome.
+ */
+[type=number]::-webkit-inner-spin-button,
+[type=number]::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/**
+ * 1. Correct the odd appearance in Chrome and Safari.
+ * 2. Correct the outline style in Safari.
+ */
+[type=search] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/**
+ * Remove the inner padding in Chrome and Safari on macOS.
+ */
+[type=search]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/**
+ * 1. Correct the inability to style clickable types in iOS and Safari.
+ * 2. Change font properties to `inherit` in Safari.
+ */
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/* Interactive
+   ========================================================================== */
+/*
+ * Add the correct display in Edge, IE 10+, and Firefox.
+ */
+details {
+  display: block;
+}
+
+/*
+ * Add the correct display in all browsers.
+ */
+summary {
+  display: list-item;
+}
+
+/* Misc
+   ========================================================================== */
+/**
+ * Add the correct display in IE 10+.
+ */
+template {
+  display: none;
+}
+
+/**
+ * Add the correct display in IE 10.
+ */
+[hidden] {
+  display: none;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  list-style: none;
+}
+
+button,
+input[type=submit],
+input[type=checkbox] {
+  cursor: pointer;
+}
+
+button:focus,
+input:focus,
+textarea:focus {
+  outline: none;
+}
+
+p,
+h2 {
+  margin: 0;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+  border-radius: 8px;
+}
+
+* {
+  user-select: none;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  background: #f5f5f5;
+  color: #4a4a4a;
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  overflow: hidden;
+  height: 100%;
+}
+
+.show {
+  display: block !important;
+}
+
+.hide {
+  display: none !important;
+}
+
+.transition-off {
+  transition: none !important;
+}
+
+.tooltip {
+  /* some styles for the tooltip, you can use your own instead */
+  position: fixed;
+  padding: 6px 10px;
+  border-radius: 3px;
+  border: 1px solid #333333;
+  text-align: center;
+  font-size: 13px;
+  line-height: 15px;
+  font-weight: 500;
+  color: #fff;
+  background: #333333;
+  white-space: nowrap;
+  z-index: 99;
+}
+.tooltip::before {
+  content: "";
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  background-color: #333333;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  pointer-events: none;
+}
+.tooltip.bottom-left::before {
+  left: auto;
+  right: 11px;
+  transform: rotate(45deg);
+}
+.tooltip.top::before {
+  top: auto;
+  bottom: -4px;
+}
+
+.text-button {
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.0892857143em;
+  text-transform: uppercase;
+  padding: 0 8px;
+  border-radius: 4px;
+  border: none;
+  outline: none;
+  line-height: 2.25rem;
+  color: #0080ff;
+  background: transparent;
+}
+.text-button:hover {
+  background: rgba(0, 128, 255, 0.0784313725);
+  transition: all 0.3s ease;
+}
+.text-button:active:focus {
+  background: rgba(0, 128, 255, 0.2509803922);
+}
+
+.drag-overlay {
+  background-color: transparent;
+  cursor: grabbing;
+  position: absolute;
+  z-index: 1001;
+}
+
+#root {
+  height: 100%;
+  display: grid;
+  grid-template-areas: "header";
+  grid-template-columns: auto;
+  margin-left: 55px;
+  grid-template-rows: auto 1fr;
+  position: relative;
+}
+@media screen and (min-width: 770px) {
+  #root {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: "header header header";
+    margin-left: 0;
+  }
+}
+#root li {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  min-height: 2.6rem;
+  overflow: hidden;
+}
+#root li .delete-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  position: absolute;
+  right: 9px;
+  top: calc(50% - 9px);
+  width: 18px;
+  opacity: 0;
+  transform: translateX(27px);
+  transition: transform 0.3s ease, opacity 0.3s;
+}
+#root li .delete-btn:focus {
+  outline: none;
+}
+#root li:hover .delete-btn {
+  transform: translateX(0);
+  opacity: 1;
+}
+header {
+  grid-area: header;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  background: #0080ff;
+  padding: 0;
+  z-index: 70;
+  margin-left: -55px;
+}
+@media screen and (min-width: 770px) {
+  header {
+    margin-left: 0;
+  }
+}
+header .menu-btn {
+  background: none;
+  width: 54px;
+  height: 54px;
+  padding: 0;
+  border: 0;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+header .menu-btn:hover {
+  background-color: #005a9e;
+}
+header .menu-btn svg {
+  width: 20px;
+  fill: #fff;
+}
+header .search-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  padding-right: 20px;
+}
+header .search-wrapper .search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 260px;
+}
+@media screen and (min-width: 770px) {
+  header .search-wrapper .search-container {
+    width: 400px;
+  }
+}
+header .search-wrapper .search-container .search-icon {
+  position: absolute;
+  left: 10px;
+  transform: rotate(88deg);
+}
+header .search-wrapper .search-container .search-icon svg {
+  fill: #0080ff;
+  width: 16px;
+}
+header .search-wrapper .search-container #search-input {
+  border: 0;
+  font-size: 14px;
+  height: 32px;
+  width: 100%;
+  padding: 0 40px;
+  border-radius: 4px;
+  color: #4a4a4a;
+}
+header .search-wrapper .search-container #search-input::placeholder {
+  color: #0080ff;
+}
+header .search-wrapper .search-container .search-reset {
+  position: absolute;
+  right: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 28px;
+  width: 28px;
+}
+header .search-wrapper .search-container .search-reset svg {
+  fill: #0080ff;
+  width: 16px;
+}
+header .search-wrapper .search-container .search-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 128, 255, 0.18);
+  pointer-events: none;
+  transition: background-color 0.3s ease;
+}
+header .search-wrapper .search-container:hover .search-overlay {
+  background-color: transparent;
+}
+
+.lists-menu {
+  background: #fff;
+  border-right: 1px solid rgb(92.6862745098%, 92.6862745098%, 92.6862745098%);
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  padding: 10px 0 42px;
+  width: 200px;
+  transition: width 0.4s ease;
+  position: absolute;
+  left: -55px;
+  top: 54px;
+  height: calc(100% - 54px);
+  z-index: 70;
+}
+@media screen and (min-width: 1010px) {
+  .lists-menu {
+    width: 290px;
+  }
+}
+@media screen and (min-width: 770px) {
+  .lists-menu {
+    position: relative;
+    height: auto;
+    top: 0;
+    left: 0;
+  }
+}
+.lists-menu.mobile {
+  width: 55px;
+  z-index: 1;
+  transition: width 0.4s ease, z-index 0s 0.4s;
+}
+.lists-menu.mobile .lists .list {
+  border-radius: 0;
+  margin: 0;
+}
+.lists-menu.mobile .lists .list .list-icon {
+  margin: 0 20px 0 7px;
+}
+.lists-menu.mobile form {
+  margin: 0;
+}
+.lists-menu.mobile form label {
+  padding: 18px 22px;
+}
+.lists-menu.mobile form label:hover {
+  background: #f5f5f5;
+}
+.lists-menu.mobile .delete-btn {
+  display: none;
+}
+.lists-menu.mobile .submit-btn {
+  display: none;
+}
+.lists-menu .lists {
+  max-height: 100%;
+  overflow-x: hidden;
+}
+.lists-menu .lists .list {
+  border-radius: 5px;
+  font-weight: bold;
+  margin: 0 8px;
+  padding: 0 10px;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+.lists-menu .lists .list:hover {
+  background: #f5f5f5;
+}
+.lists-menu .lists .list .list-icon {
+  margin-right: 12px;
+  width: 18px;
+}
+.lists-menu .lists .list .list-icon svg {
+  width: 18px;
+  fill: #757575;
+}
+.lists-menu .lists .list .project-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lists-menu .lists .list .todo-count {
+  color: #757575;
+  font-size: 13px;
+  margin-left: 5px;
+  padding: 0px 5px;
+}
+.lists-menu .lists .list .delete-btn .delete-svg {
+  fill: rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+}
+.lists-menu .lists .list .delete-btn:focus:active .delete-svg {
+  fill: rgb(50.6862745098%, 50.6862745098%, 50.6862745098%);
+}
+.lists-menu .lists .list .delete-btn:hover .delete-svg {
+  fill: rgb(65.6862745098%, 65.6862745098%, 65.6862745098%);
+}
+.lists-menu .lists .list.selected {
+  background: rgba(0, 128, 255, 0.1);
+  color: #0080ff;
+}
+.lists-menu .lists .list.selected .list-icon svg {
+  fill: #0080ff;
+}
+.lists-menu .lists .list.selected .todo-count {
+  color: rgb(30%, 65.137254902%, 100%);
+}
+.lists-menu .lists .list.selected .delete-btn .delete-svg {
+  fill: rgb(30%, 65.137254902%, 100%);
+}
+.lists-menu .lists .list.selected .delete-btn:focus:active .delete-svg {
+  fill: rgb(0%, 35.137254902%, 70%);
+}
+.lists-menu .lists .list.selected .delete-btn:hover .delete-svg {
+  fill: #0080ff;
+}
+.lists-menu .lists .list.pinned .delete-btn {
+  display: none;
+}
+.lists-menu .lists .list.all-tasks-list .list-icon svg {
+  fill: #ff8a00;
+}
+.lists-menu .lists .list.all-tasks-list.selected {
+  background: rgba(255, 136, 0, 0.1);
+  color: #ff8a00;
+}
+.lists-menu .lists .list.all-tasks-list.selected .todo-count {
+  color: #ff8a00;
+}
+.lists-menu .lists .list.my-day-list .list-icon svg {
+  fill: #e52e71;
+}
+.lists-menu .lists .list.my-day-list.selected {
+  background: rgba(229, 46, 113, 0.1);
+  color: #e52e71;
+}
+.lists-menu .lists .list.my-day-list.selected .todo-count {
+  color: #e52e71;
+}
+.lists-menu .lists .list.important-list .list-icon svg {
+  fill: #f44336;
+}
+.lists-menu .lists .list.important-list.selected {
+  background: rgba(244, 67, 54, 0.1);
+  color: #f44336;
+}
+.lists-menu .lists .list.important-list.selected .todo-count {
+  color: #f44336;
+}
+.lists-menu .lists .list.planned-list .list-icon svg {
+  fill: #9c27b0;
+}
+.lists-menu .lists .list.planned-list.selected {
+  background: rgba(155, 39, 176, 0.1);
+  color: #9c27b0;
+}
+.lists-menu .lists .list.planned-list.selected .todo-count {
+  color: #9c27b0;
+}
+.lists-menu .lists .list.home-list .list-icon svg {
+  fill: #0080ff;
+}
+.lists-menu form {
+  align-items: center;
+  box-shadow: 0 -17px 0 -16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 -17px 0 -16px #e5e5e5;
+  display: flex;
+  margin: 0px 10px;
+  position: relative;
+}
+.lists-menu form label {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  padding: 12px;
+}
+.lists-menu form label svg {
+  fill: #757575;
+  width: 10px;
+}
+.lists-menu form #newList {
+  background: none;
+  border: none;
+  padding-right: 60px;
+  min-height: 2.6rem;
+  width: 100%;
+}
+.lists-menu form #newList:focus {
+  outline: none;
+}
+.lists-menu form .submit-btn {
+  background-color: #fff;
+  border: none;
+  border-radius: 5px;
+  color: #0080ff;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.8rem;
+  letter-spacing: initial;
+  right: 0;
+  text-transform: uppercase;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.lists-menu form .submit-btn:hover {
+  background: rgba(0, 128, 255, 0.0784313725);
+}
+.lists-menu form .submit-btn:active:focus {
+  background: rgba(0, 128, 255, 0.2509803922);
+}
+
+.hide-empty-state {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.tasks-view {
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin: 25px 25px;
+  padding-bottom: 60px;
+  position: relative;
+}
+.tasks-view[data-project-index="2"] .tasks-header .sort-menu.open {
+  height: 345px;
+}
+.tasks-view[data-project-index="2"] .tasks-header .sort-menu #sortByMyDay {
+  display: none;
+}
+.tasks-view[data-project-index="3"] .tasks-header .sort-menu.open {
+  height: 345px;
+}
+.tasks-view[data-project-index="3"] .tasks-header .sort-menu #sortByBookmarked {
+  display: none;
+}
+.tasks-view[data-project-index="4"] .todo-list {
+  height: auto;
+}
+.tasks-view.pinned .tasks-header h1 span:hover {
+  cursor: auto;
+  background: initial;
+}
+.tasks-view.pinned .todo-list {
+  height: auto;
+}
+.tasks-view.pinned .todo-list li.list-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+.tasks-view.pinned .todo-list li.list-header button.open-close {
+  border: 0;
+  background: none;
+  transform: rotate(-90deg);
+}
+.tasks-view.pinned .todo-list li.list-header button.open-close.close {
+  transform: rotate(90deg);
+}
+.tasks-view.pinned .todo-list li.list-header button.open-close svg {
+  width: 12px;
+}
+.tasks-view.pinned .todo-list ul.todo-list-time {
+  border-bottom: 1px solid rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+  padding: 0 2px;
+  overflow: hidden;
+  height: 0;
+  transition: all 0.6s ease;
+  position: relative;
+}
+.tasks-view.pinned .todo-list .list-header.hide + ul.todo-list-time {
+  border-bottom: 0;
+}
+.tasks-view .tasks-header {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr auto;
+  grid-auto-rows: max-content;
+}
+.tasks-view .tasks-header h1 {
+  margin: 0;
+  padding: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  overflow: hidden;
+  width: 100%;
+}
+@media screen and (min-width: 770px) {
+  .tasks-view .tasks-header h1 {
+    font-size: 25px;
+  }
+}
+.tasks-view .tasks-header h1 span,
+.tasks-view .tasks-header h1 input {
+  width: 100%;
+}
+.tasks-view .tasks-header h1 span {
+  display: block;
+  padding: 6px 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tasks-view .tasks-header h1 span:hover {
+  background: #f5f5f5;
+  cursor: text;
+}
+.tasks-view .tasks-header h1 input {
+  border: none;
+  font-weight: bold;
+  height: 100%;
+  padding: 5px 10px;
+}
+.tasks-view .tasks-header h1 input:focus {
+  background: #f5f5f5;
+}
+.tasks-view .tasks-header .sort-btn {
+  align-items: center;
+  display: flex;
+  margin-right: 20px;
+  text-transform: capitalize;
+}
+.tasks-view .tasks-header .sort-btn svg {
+  fill: #0080ff;
+  width: 16px;
+}
+.tasks-view .tasks-header .sort-btn .sort-text {
+  padding-left: 5px;
+}
+.tasks-view .tasks-header .sort-menu {
+  background-color: #fff;
+  border-radius: 4px;
+  position: absolute;
+  right: 12px;
+  top: 53px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  z-index: 2;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+  max-height: calc(100% - 65px);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.tasks-view .tasks-header .sort-menu.open {
+  display: inline-block;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  width: initial;
+  height: initial;
+  height: 393px;
+}
+.tasks-view .tasks-header .sort-menu .sort-title {
+  border-bottom: 1px solid #eaeaea;
+  margin: 0;
+  padding: 12px 8px 10px 8px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+}
+.tasks-view .tasks-header .sort-menu .sort-list {
+  font-size: 16px;
+  padding: 8px 0;
+  height: calc(100% - 43px);
+  overflow-x: auto;
+}
+@media screen and (min-height: 560px) {
+  .tasks-view .tasks-header .sort-menu .sort-list {
+    overflow-x: unset;
+  }
+}
+.tasks-view .tasks-header .sort-menu .sort-list .sort-type .sort-type-btn {
+  border: none;
+  background-color: #fff;
+  color: #757575;
+  height: 48px;
+  padding: 0 15px;
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+.tasks-view .tasks-header .sort-menu .sort-list .sort-type .sort-type-btn:hover {
+  background-color: #f5f5f5;
+  transition: background-color 0.3s ease;
+}
+.tasks-view .tasks-header .sort-menu .sort-list .sort-type .sort-type-btn:focus:active {
+  background-color: #eaeaea;
+}
+.tasks-view .tasks-header .sort-menu .sort-list .sort-type .sort-type-btn svg {
+  fill: #757575;
+  width: 18px;
+}
+.tasks-view .tasks-header .sort-menu .sort-list .sort-type .sort-type-btn .text {
+  padding-left: 15px;
+}
+.tasks-view .tasks-header .sort-indicator {
+  font-size: 12px;
+  color: #757575;
+  grid-column: 1/span3;
+  padding: 0 24px;
+  margin: -10px 0 5px;
+}
+.tasks-view .tasks-header .sort-indicator.show-sort {
+  animation: show 0.6s ease;
+}
+.tasks-view .tasks-header .sort-indicator.show-sort .sort-indicator-inner {
+  animation: slide-in-top 0.6s ease;
+}
+.tasks-view .tasks-header .sort-indicator.hide-sort {
+  animation: hide 0.6s ease;
+}
+.tasks-view .tasks-header .sort-indicator.hide-sort .sort-indicator-inner {
+  animation: slide-out-top 0.6s ease;
+}
+.tasks-view .tasks-header .sort-indicator .sort-indicator-inner {
+  display: flex;
+  align-items: center;
+}
+.tasks-view .tasks-header .sort-indicator .sort-indicator-inner .sort-indicator-text {
+  line-height: 2;
+}
+.tasks-view .tasks-header .sort-indicator .sort-indicator-inner .sort-indicator-toggle {
+  border: 0;
+  background-color: transparent;
+  margin-left: 5px;
+  transform: rotate(-90deg);
+  display: flex;
+  align-items: center;
+  align-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+}
+.tasks-view .tasks-header .sort-indicator .sort-indicator-inner .sort-indicator-toggle:hover {
+  background-color: #f5f5f5;
+  transition: background-color 0.3s ease;
+}
+.tasks-view .tasks-header .sort-indicator .sort-indicator-inner .sort-indicator-toggle:focus:active {
+  background-color: rgb(92.6862745098%, 92.6862745098%, 92.6862745098%);
+}
+.tasks-view .tasks-header .sort-indicator .sort-indicator-inner .sort-indicator-toggle svg {
+  width: 12px;
+  fill: #757575;
+}
+.tasks-view .tasks-header .sort-indicator .sort-indicator-inner .sort-indicator-toggle.desc {
+  transform: rotate(90deg);
+}
+.tasks-view .tasks-header .sort-indicator .sort-indicator-inner .sort-indicator-remove {
+  border: 0;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  margin-left: auto;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+}
+.tasks-view .tasks-header .sort-indicator .sort-indicator-inner .sort-indicator-remove:hover {
+  background-color: #f5f5f5;
+  transition: background-color 0.3s ease;
+}
+.tasks-view .tasks-header .sort-indicator .sort-indicator-inner .sort-indicator-remove:focus:active {
+  background-color: rgb(92.6862745098%, 92.6862745098%, 92.6862745098%);
+}
+.tasks-view .tasks-header .sort-indicator .sort-indicator-inner .sort-indicator-remove svg {
+  width: 12px;
+  fill: #757575;
+}
+.tasks-view .todo-list {
+  overflow-x: hidden;
+  height: 0;
+  transition: all 0.3s ease;
+  position: relative;
+}
+.tasks-view .todo-list.grow-items .todo-item {
+  left: 11px;
+  width: calc(100% - 22px);
+}
+.tasks-view .todo-list .todo-item {
+  border: 1px solid rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+  border-width: 1px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  min-height: 3.13rem !important;
+  padding: 6px 11px;
+  transition: transform 0.6s ease, box-shadow 0.25s ease-out, border-color 0.15s linear;
+  position: absolute;
+  left: 15px;
+  top: 5px;
+  width: calc(100% - 30px);
+  transform: translateY(0);
+  background: #fff;
+}
+.tasks-view .todo-list .todo-item:first-child {
+  z-index: 1;
+}
+.tasks-view .todo-list .todo-item:hover {
+  box-shadow: 0px 0px 4px rgba(0, 128, 255, 0.7);
+  border-color: #fff;
+  transition: box-shadow 150ms ease-out, border-color 150ms ease-out, transform 0.6s ease;
+}
+.tasks-view .todo-list .todo-item .title-block {
+  padding-left: 15px;
+}
+.tasks-view .todo-list .todo-item .title-block .todo-title {
+  transition: color 0.3s ease;
+  word-break: break-word;
+}
+.tasks-view .todo-list .todo-item .title-block .todo-title::before {
+  background: rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+  content: "";
+  height: 1px;
+  left: 48px;
+  position: absolute;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transform: scaleX(0) translateY(-50%);
+  transform-origin: 0 0;
+  transition: transform 0.3s ease;
+  width: calc(100% - 48px * 2);
+}
+.tasks-view .todo-list .todo-item .title-block .indicators {
+  display: flex;
+  flex-wrap: wrap;
+  line-height: 1.5;
+}
+.tasks-view .todo-list .todo-item .title-block .indicators .note-indicator,
+.tasks-view .todo-list .todo-item .title-block .indicators .date-indicator,
+.tasks-view .todo-list .todo-item .title-block .indicators .subtask-indicator,
+.tasks-view .todo-list .todo-item .title-block .indicators .project-name-indicator,
+.tasks-view .todo-list .todo-item .title-block .indicators .important-indicator,
+.tasks-view .todo-list .todo-item .title-block .indicators .my-day-indicator {
+  color: #757575;
+  display: flex;
+  font-size: 12px;
+  padding-right: 6px;
+  transition: color 0.3s ease;
+}
+.tasks-view .todo-list .todo-item .title-block .indicators .note-indicator::before,
+.tasks-view .todo-list .todo-item .title-block .indicators .date-indicator::before,
+.tasks-view .todo-list .todo-item .title-block .indicators .subtask-indicator::before,
+.tasks-view .todo-list .todo-item .title-block .indicators .project-name-indicator::before,
+.tasks-view .todo-list .todo-item .title-block .indicators .important-indicator::before,
+.tasks-view .todo-list .todo-item .title-block .indicators .my-day-indicator::before {
+  content: "•";
+  color: rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+  margin-right: 6px;
+}
+.tasks-view .todo-list .todo-item .title-block .indicators .note-indicator svg,
+.tasks-view .todo-list .todo-item .title-block .indicators .date-indicator svg,
+.tasks-view .todo-list .todo-item .title-block .indicators .subtask-indicator svg,
+.tasks-view .todo-list .todo-item .title-block .indicators .project-name-indicator svg,
+.tasks-view .todo-list .todo-item .title-block .indicators .important-indicator svg,
+.tasks-view .todo-list .todo-item .title-block .indicators .my-day-indicator svg {
+  fill: #757575;
+  margin-right: 5px;
+  width: 10px;
+  height: 18px;
+  transition: fill 0.3s ease;
+}
+.tasks-view .todo-list .todo-item .title-block .indicators span:first-child::before {
+  display: none;
+}
+.tasks-view .todo-list .todo-item .title-block .indicators .date-indicator {
+  color: #757575;
+}
+.tasks-view .todo-list .todo-item .title-block .indicators .date-indicator svg {
+  fill: #757575;
+}
+.tasks-view .todo-list .todo-item .title-block .indicators .date-indicator.overdue {
+  color: #eb5a46;
+}
+.tasks-view .todo-list .todo-item .title-block .indicators .date-indicator.overdue svg {
+  fill: #eb5a46;
+}
+.tasks-view .todo-list .todo-item .title-block .indicators .date-indicator.today {
+  color: #0080ff;
+}
+.tasks-view .todo-list .todo-item .title-block .indicators .date-indicator.today svg {
+  fill: #0080ff;
+}
+.tasks-view .todo-list .todo-item .title-block .indicators .subtask-indicator svg {
+  display: none;
+}
+.tasks-view .todo-list .todo-item .title-block .indicators .subtask-indicator.completed svg {
+  display: inherit;
+}
+.tasks-view .todo-list .todo-item .title-block .indicators .subtask-indicator.completed .subtask-indicator-label {
+  pointer-events: none;
+}
+.tasks-view .todo-list .todo-item .title-block .indicators .important-indicator {
+  height: 18px;
+}
+.tasks-view .todo-list .todo-item .title-block .indicators .important-indicator svg {
+  fill: #0080ff;
+  margin-right: 0;
+  width: 14px;
+}
+.tasks-view .todo-list .todo-item .title-block .indicators .my-day-indicator {
+  height: 18px;
+}
+.tasks-view .todo-list .todo-item .title-block .indicators .my-day-indicator svg {
+  fill: #0080ff;
+  margin-right: 0;
+  width: 14px;
+}
+.tasks-view .todo-list .todo-item .title-block.indicator-on .todo-title::before {
+  top: 15px;
+}
+.tasks-view .todo-list .todo-item input[type=checkbox] {
+  height: 0;
+  opacity: 0;
+  width: 0;
+  display: none;
+}
+.tasks-view .todo-list .todo-item label {
+  cursor: pointer;
+  height: 22px;
+  width: 22px;
+}
+.tasks-view .todo-list .todo-item label:hover span {
+  border-color: #0080ff;
+  background: rgba(0, 128, 255, 0.1);
+}
+.tasks-view .todo-list .todo-item label:hover span svg {
+  stroke-dashoffset: 0;
+  stroke: #0080ff;
+}
+.tasks-view .todo-list .todo-item label span {
+  border-radius: 50%;
+  display: inline-block;
+  transform: translate3d(0, 0, 0);
+  position: relative;
+  width: 22px;
+  height: 22px;
+  transform: scale(1);
+  border: 1px solid rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+  transition: all 0.2s ease;
+}
+.tasks-view .todo-list .todo-item label span:before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: #0080ff;
+  border-radius: 50%;
+  display: block;
+  transform: scale(0);
+  opacity: 1;
+}
+.tasks-view .todo-list .todo-item label span svg {
+  position: absolute;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 16px;
+  stroke-dashoffset: 16px;
+  transition: all 0.3s ease;
+  transition-delay: 0.1s;
+  transform: translate3d(0, 0, 0);
+  width: 12px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+@keyframes wave {
+  50% {
+    transform: scale(0.9);
+  }
+}
+.tasks-view .todo-list .todo-item .delete-btn .delete-svg {
+  fill: rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+  transition: fill 0.3s ease;
+}
+.tasks-view .todo-list .todo-item .delete-btn:focus:active .delete-svg {
+  fill: rgb(50.6862745098%, 50.6862745098%, 50.6862745098%);
+}
+.tasks-view .todo-list .todo-item .delete-btn:hover .delete-svg {
+  fill: rgb(65.6862745098%, 65.6862745098%, 65.6862745098%);
+}
+.tasks-view .todo-list .todo-item.completed .title-block .todo-title {
+  color: rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+}
+.tasks-view .todo-list .todo-item.completed .title-block .todo-title::before {
+  transform: scaleX(1);
+}
+.tasks-view .todo-list .todo-item.completed .title-block .indicators .note-indicator,
+.tasks-view .todo-list .todo-item.completed .title-block .indicators .date-indicator,
+.tasks-view .todo-list .todo-item.completed .title-block .indicators .date-indicator.overdue,
+.tasks-view .todo-list .todo-item.completed .title-block .indicators .date-indicator.today,
+.tasks-view .todo-list .todo-item.completed .title-block .indicators .subtask-indicator,
+.tasks-view .todo-list .todo-item.completed .title-block .indicators .project-name-indicator,
+.tasks-view .todo-list .todo-item.completed .title-block .indicators .important-indicator,
+.tasks-view .todo-list .todo-item.completed .title-block .indicators .my-day-indicator {
+  color: rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+  pointer-events: none;
+}
+.tasks-view .todo-list .todo-item.completed .title-block .indicators .note-indicator svg,
+.tasks-view .todo-list .todo-item.completed .title-block .indicators .date-indicator svg,
+.tasks-view .todo-list .todo-item.completed .title-block .indicators .date-indicator.overdue svg,
+.tasks-view .todo-list .todo-item.completed .title-block .indicators .date-indicator.today svg,
+.tasks-view .todo-list .todo-item.completed .title-block .indicators .subtask-indicator svg,
+.tasks-view .todo-list .todo-item.completed .title-block .indicators .project-name-indicator svg,
+.tasks-view .todo-list .todo-item.completed .title-block .indicators .important-indicator svg,
+.tasks-view .todo-list .todo-item.completed .title-block .indicators .my-day-indicator svg {
+  fill: rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+}
+.tasks-view .todo-list .todo-item.completed label span {
+  background: #0080ff;
+  border-color: #0080ff;
+  animation: wave 0.4s ease;
+}
+.tasks-view .todo-list .todo-item.completed label span:before {
+  transform: scale(3.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.6s ease;
+}
+.tasks-view .todo-list .todo-item.completed label span svg {
+  stroke-dashoffset: 0;
+}
+.tasks-view .todo-list .todo-item.completed label:hover span svg {
+  stroke: #fff;
+  transition-duration: 0.2s;
+}
+.tasks-view .todo-list .todo-item.completed .delete-btn {
+  transform: translateX(0) !important;
+  opacity: 1 !important;
+}
+.tasks-view .todo-list .todo-item.completed .delete-btn .delete-svg {
+  fill: rgb(30%, 65.137254902%, 100%);
+}
+.tasks-view .todo-list .todo-item.completed .delete-btn:focus:active .delete-svg {
+  fill: rgb(0%, 35.137254902%, 70%);
+}
+.tasks-view .todo-list .todo-item.completed .delete-btn:hover .delete-svg {
+  fill: #0080ff;
+}
+.tasks-view .todo-list .todo-item.selected {
+  border-width: 0;
+  box-shadow: 0px 0px 0px 2px rgba(0, 128, 255, 0.3), 0px 0px 10px rgba(0, 128, 255, 0.3);
+  padding: 7px 13px 7px 11px;
+}
+.tasks-view .todo-list .todo-item.dragged {
+  box-shadow: 0 8px 10px -5px rgba(0, 0, 0, 0.2), 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12);
+  cursor: grabbing !important;
+  z-index: 1000;
+}
+.tasks-view .todo-list .todo-item.dragged:hover {
+  border-color: #cecece;
+}
+.tasks-view .todo-list .todo-item.dragged:hover .delete-btn {
+  opacity: 0 !important;
+}
+.tasks-view .todo-list li.medium label span {
+  background: rgba(255, 159, 26, 0.1);
+  border-color: #ff9f1a;
+  border-width: 2px;
+  transition: all 0.2s ease;
+}
+.tasks-view .todo-list li.high label span {
+  background: rgba(235, 90, 70, 0.1);
+  border-color: #eb5a46;
+  border-width: 2px;
+  transition: all 0.2s ease;
+}
+.tasks-view .todo-list .fix-height {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+}
+.tasks-view #empty-state {
+  align-items: center;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  padding: 0 5px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: visibility 0s, opacity 0.17s ease-in;
+  width: 350px;
+}
+.tasks-view #empty-state svg {
+  order: 1;
+  width: 200px;
+}
+@media screen and (min-height: 460px) {
+  .tasks-view #empty-state svg {
+    order: 0;
+    width: 100%;
+  }
+}
+.tasks-view #empty-state p {
+  color: #757575;
+  font-size: 14px;
+  padding: 10px 0;
+  margin: 20px 0;
+}
+.tasks-view form {
+  align-items: center;
+  background: #fff;
+  bottom: -15px;
+  box-shadow: 0 -4px 10px 0 rgba(0, 0, 0, 0.1);
+  display: flex;
+  padding: 0 20px;
+  margin: 15px 0;
+  padding: 10px 10px;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+}
+.tasks-view form #newTodo {
+  border: 1px solid rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+  border-radius: 25px;
+  font-size: 13px;
+  margin-right: 10px;
+  padding: 12px 19px;
+  transition: all 0.4s ease;
+  width: 100%;
+}
+.tasks-view form #newTodo:hover, .tasks-view form #newTodo:focus {
+  border-color: #0080ff;
+}
+.tasks-view form #newTodo:focus ~ .submit-btn {
+  background: rgb(30%, 65.137254902%, 100%);
+  border-color: rgb(30%, 65.137254902%, 100%);
+}
+.tasks-view form #newTodo:focus ~ .submit-btn:hover {
+  background: #0080ff;
+  border-color: #0080ff;
+}
+.tasks-view form #newTodo:focus ~ .submit-btn .arrow-svg {
+  fill: #fff;
+}
+.tasks-view form .submit-btn {
+  background: #fff;
+  border: 1px solid rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+  border-radius: 50%;
+  height: 40px;
+  min-height: 40px;
+  min-width: 40px;
+  position: relative;
+  transform: rotate(-90deg);
+  transition: all 0.4s ease;
+  width: 40px;
+}
+.tasks-view form .submit-btn:hover {
+  background: #0080ff;
+  border-color: #0080ff;
+}
+.tasks-view form .submit-btn:hover .arrow-svg {
+  fill: #fff;
+}
+.tasks-view form .submit-btn:focus:active {
+  box-shadow: 0 0 0 6px #cecece;
+}
+.tasks-view form .submit-btn svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px;
+}
+.tasks-view form .submit-btn svg .arrow-svg {
+  fill: rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+  transition: all 0.4s ease;
+}
+
+.details-view {
+  background: #f5f5f5;
+  margin-bottom: 40px;
+  position: absolute;
+  width: 0;
+}
+@media screen and (min-width: 770px) {
+  .details-view {
+    position: relative;
+  }
+}
+.details-view div {
+  background: #fff;
+  border: 1px solid rgb(92.6862745098%, 92.6862745098%, 92.6862745098%);
+  padding: 12px;
+  position: relative;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+.details-view div textarea {
+  border: none;
+  font-weight: 400;
+  overflow: hidden;
+  padding: 6px 10px;
+  resize: none;
+  width: 100%;
+}
+.details-view div textarea:hover, .details-view div textarea:focus {
+  background: #f5f5f5;
+}
+.details-view div > svg {
+  width: 16px;
+  height: 18px;
+  fill: #757575;
+  left: 22px;
+  position: absolute;
+  z-index: 1;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.details-view .name-block {
+  align-items: center;
+  border-bottom: none;
+  display: flex;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.details-view .name-block textarea.name-details {
+  height: 30px;
+  font-weight: 500;
+}
+.details-view .name-block .important-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+.details-view .name-block .important-block label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.details-view .name-block .important-block label svg {
+  fill: rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+  width: 18px;
+  transition: fill 0.3s ease;
+}
+.details-view .name-block .important-block label:hover svg {
+  fill: #757575;
+}
+.details-view .name-block .important-block #important-check {
+  height: 0;
+  opacity: 0;
+  width: 0;
+}
+.details-view .name-block .important-block.important label svg {
+  fill: #0080ff;
+}
+.details-view .subtask-block {
+  border-top: none;
+}
+.details-view .subtask-block .subtasks-list {
+  padding-bottom: 5px;
+  position: relative;
+  transition: height 0.6s ease;
+}
+.details-view .subtask-block .subtasks-list .subtask {
+  background-color: #fff;
+  border: 1px solid rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+  border-radius: 4px;
+  margin-bottom: 10px;
+  padding: 10px;
+  transition: all 0.4s ease;
+  transition: transform 0.6s ease, box-shadow 0.25s ease-out, border-color 0.15s linear;
+  position: absolute !important;
+  width: 100%;
+}
+.details-view .subtask-block .subtasks-list .subtask:hover {
+  box-shadow: 0 0 4px rgba(0, 128, 255, 0.7);
+  border-color: #fff;
+}
+.details-view .subtask-block .subtasks-list .subtask:first-child {
+  z-index: 1;
+}
+.details-view .subtask-block .subtasks-list .subtask .subtask-name {
+  margin-left: 15px;
+  transition: color 0.3s ease;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.details-view .subtask-block .subtasks-list .subtask .subtask-name::before {
+  background: rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+  content: "";
+  height: 1px;
+  left: 48px;
+  position: absolute;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transform: scaleX(0) translateY(-50%);
+  transform-origin: 0 0;
+  transition: transform 0.3s ease;
+  width: calc(100% - 48px * 2);
+}
+.details-view .subtask-block .subtasks-list .subtask #subtaskNameInput {
+  margin: 0;
+  margin-left: 15px;
+  padding: 0;
+  border: none;
+  color: inherit;
+}
+.details-view .subtask-block .subtasks-list .subtask input[type=checkbox] {
+  height: 0;
+  opacity: 0;
+  width: 0;
+}
+.details-view .subtask-block .subtasks-list .subtask label {
+  cursor: pointer;
+  height: 18px;
+  width: 18px;
+}
+.details-view .subtask-block .subtasks-list .subtask label:hover span {
+  border-color: #0080ff;
+  background: rgba(0, 128, 255, 0.1);
+}
+.details-view .subtask-block .subtasks-list .subtask label:hover span svg {
+  stroke-dashoffset: 0;
+  stroke: #0080ff;
+}
+.details-view .subtask-block .subtasks-list .subtask label span {
+  border-radius: 50%;
+  display: inline-block;
+  transform: translate3d(0, 0, 0);
+  position: relative;
+  width: 18px;
+  height: 18px;
+  transform: scale(1);
+  border: 1px solid rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+  transition: all 0.2s ease;
+}
+.details-view .subtask-block .subtasks-list .subtask label span:before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: #0080ff;
+  border-radius: 50%;
+  display: block;
+  transform: scale(0);
+  opacity: 1;
+}
+.details-view .subtask-block .subtasks-list .subtask label span svg {
+  position: absolute;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 16px;
+  stroke-dashoffset: 16px;
+  transition: all 0.3s ease;
+  transition-delay: 0.1s;
+  transform: translate3d(0, 0, 0);
+  width: 9px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+@keyframes wave {
+  50% {
+    transform: scale(0.9);
+  }
+}
+.details-view .subtask-block .subtasks-list .subtask .delete-btn .delete-svg {
+  fill: rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+  transition: fill 0.3s ease;
+}
+.details-view .subtask-block .subtasks-list .subtask .delete-btn:focus:active .delete-svg {
+  fill: rgb(50.6862745098%, 50.6862745098%, 50.6862745098%);
+}
+.details-view .subtask-block .subtasks-list .subtask .delete-btn:hover .delete-svg {
+  fill: rgb(65.6862745098%, 65.6862745098%, 65.6862745098%);
+}
+.details-view .subtask-block .subtasks-list .subtask.completed .subtask-name {
+  color: rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+}
+.details-view .subtask-block .subtasks-list .subtask.completed .subtask-name::before {
+  transform: scaleX(1);
+}
+.details-view .subtask-block .subtasks-list .subtask.completed label span {
+  background: #0080ff;
+  border-color: #0080ff;
+  animation: wave 0.4s ease;
+}
+.details-view .subtask-block .subtasks-list .subtask.completed label span:before {
+  transform: scale(3.5);
+  opacity: 0;
+  transition: all 0.6s ease;
+}
+.details-view .subtask-block .subtasks-list .subtask.completed label span svg {
+  stroke-dashoffset: 0;
+}
+.details-view .subtask-block .subtasks-list .subtask.completed label:hover span svg {
+  stroke: #fff;
+  transition-duration: 0.2s;
+}
+.details-view .subtask-block .subtasks-list .subtask.completed .delete-btn {
+  transform: translateX(0) !important;
+  opacity: 1 !important;
+}
+.details-view .subtask-block .subtasks-list .subtask.completed .delete-btn .delete-svg {
+  fill: rgb(30%, 65.137254902%, 100%);
+}
+.details-view .subtask-block .subtasks-list .subtask.completed .delete-btn:focus:active .delete-svg {
+  fill: rgb(0%, 35.137254902%, 70%);
+}
+.details-view .subtask-block .subtasks-list .subtask.completed .delete-btn:hover .delete-svg {
+  fill: #0080ff;
+}
+.details-view .subtask-block .subtasks-list .subtask.selected {
+  border-width: 0;
+  box-shadow: 0 0 0 2px rgba(0, 128, 255, 0.3), 0 0 10px rgba(0, 128, 255, 0.3);
+}
+.details-view .subtask-block .subtasks-list .subtask.selected:not(.completed) {
+  cursor: text !important;
+}
+.details-view .subtask-block form {
+  align-items: center;
+  box-shadow: 0 -17px 0 -16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 -17px 0 -16px #e5e5e5;
+  margin: 0 10px;
+  position: relative;
+}
+.details-view .subtask-block form #newSubTask {
+  background: none;
+  border: none;
+  padding: 0 10px;
+  padding-right: 55px;
+  min-height: 2.6rem;
+  width: 100%;
+}
+.details-view .subtask-block form #newSubTask:focus {
+  outline: none;
+}
+.details-view .subtask-block form .submit-btn {
+  background: #fff;
+  border: none;
+  border-radius: 5px;
+  color: #0080ff;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.8rem;
+  letter-spacing: initial;
+  right: 0;
+  text-transform: uppercase;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.details-view .subtask-block form .submit-btn:focus:active {
+  background: rgba(0, 128, 255, 0.2509803922);
+}
+.details-view .subtask-block form .submit-btn:hover {
+  background: rgba(0, 128, 255, 0.0784313725);
+}
+.details-view .note-block {
+  display: flex;
+  padding: 0;
+  margin-bottom: 0;
+}
+.details-view .note-block textarea {
+  border: 1px solid transparent;
+  color: #757575;
+  font-weight: 400;
+  height: 86px;
+  padding: 18px 22px;
+}
+.details-view .note-block textarea:hover {
+  background: #fff;
+  border-color: rgb(80.6862745098%, 80.6862745098%, 80.6862745098%);
+}
+.details-view .note-block textarea:focus {
+  background: #fff;
+  border-color: #0080ff;
+}
+.details-view .my-day {
+  display: flex;
+  padding: 16px 20px 16px 22px;
+}
+.details-view .my-day:hover {
+  background: #f5f5f5;
+}
+.details-view .my-day > svg {
+  position: relative;
+  transform: none;
+  top: initial;
+  left: initial;
+}
+.details-view .my-day .my-day-text {
+  color: #757575;
+  padding-left: 12px;
+  width: 100%;
+}
+.details-view .my-day .remove-my-day {
+  pointer-events: none;
+  opacity: 0;
+}
+.details-view .my-day .remove-my-day svg {
+  cursor: pointer;
+  width: 10px;
+}
+.details-view .my-day.added > svg {
+  fill: #0080ff;
+}
+.details-view .my-day.added .my-day-text {
+  color: #0080ff;
+}
+.details-view .my-day.added:hover .remove-my-day {
+  opacity: 1;
+  pointer-events: initial;
+}
+.details-view .date-block {
+  padding: 0;
+}
+.details-view .date-block > svg {
+  pointer-events: none;
+}
+.details-view .date-block label {
+  display: block;
+  position: relative;
+}
+.details-view .date-block label:hover {
+  background: #f5f5f5;
+}
+.details-view .date-block label #date {
+  border: 0;
+  cursor: auto;
+  padding: 16px 0;
+  position: relative;
+  opacity: 0;
+  width: 100%;
+  z-index: 1;
+}
+.details-view .date-block label .date-message {
+  color: #757575;
+  left: 50px;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.details-view .date-block .remove-date {
+  opacity: 0;
+  position: absolute;
+  right: 20px;
+  width: 10px;
+  z-index: 2;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.details-view .date-block label.is-set .date-message {
+  color: #757575;
+}
+.details-view .date-block:hover .remove-date {
+  cursor: pointer;
+  opacity: 1;
+}
+.details-view .date-block label.is-set + svg {
+  fill: #757575;
+}
+.details-view .date-block label.overdue .date-message {
+  color: #eb5a46;
+}
+.details-view .date-block label.overdue + svg {
+  fill: #eb5a46;
+}
+.details-view .date-block label.today .date-message {
+  color: #0080ff;
+}
+.details-view .date-block label.today + svg {
+  fill: #0080ff;
+}
+.details-view .priority-block {
+  padding: 18px 22px;
+}
+.details-view .priority-block h2 {
+  color: #757575;
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 15px;
+}
+.details-view .priority-block ul {
+  display: flex;
+  align-items: center;
+}
+.details-view .priority-block ul li {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  min-height: auto !important;
+  padding: 4px;
+}
+.details-view .priority-block ul li:hover {
+  background: #f5f5f5;
+}
+.details-view .priority-block ul li svg {
+  width: 20px;
+}
+.details-view .priority-block ul li.selected {
+  border-color: #cecece;
+}
+.details-view .priority-block ul li.low svg {
+  fill: #cecece;
+}
+.details-view .priority-block ul li.medium {
+  margin-left: 16px;
+}
+.details-view .priority-block ul li.medium svg {
+  fill: #ff9f1a;
+}
+.details-view .priority-block ul li.high {
+  margin-left: 16px;
+}
+.details-view .priority-block ul li.high svg {
+  fill: #eb5a46;
+}
+.details-view .creation-date {
+  background: #f4f4f4;
+  border-color: #eaeaea;
+  display: flex;
+  justify-content: center;
+  color: #666666;
+  font-size: 13px;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 360px;
+  max-width: calc(100% - 55px);
+  border-radius: 0;
+  margin-bottom: 0;
+}
+.details-view.show {
+  overflow-x: hidden;
+  padding: 10px;
+  width: 360px;
+  z-index: 70;
+  right: 0;
+  top: 54px;
+  height: calc(100% - 88px);
+  max-width: 100%;
+}
+@media screen and (min-width: 770px) {
+  .details-view.show {
+    padding-left: 0;
+    height: auto;
+    top: 0;
+  }
+}
+
+.details-view.disabled div {
+  cursor: not-allowed;
+  opacity: 0.65;
+  pointer-events: none;
+  user-select: none;
+}
+.details-view.disabled .creation-date {
+  opacity: 1;
+  color: #757575;
+}
+
+#modal {
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
+  left: calc(50% - 27.5px);
+  position: absolute;
+  transform: translate(-50%, -50%);
+  visibility: visible;
+  opacity: 1;
+  top: 50%;
+  transition: visibility 0s, opacity 0.15s linear 0.1s, transform 0.3s ease-out 0.1s;
+  z-index: 99;
+  width: 100%;
+  width: fit-content;
+}
+@media screen and (min-width: 770px) {
+  #modal {
+    left: 50%;
+    width: auto;
+  }
+}
+#modal h2 {
+  color: rgba(0, 0, 0, 0.87);
+  font-size: 1.25rem;
+  line-height: 2rem;
+  font-weight: 500;
+  letter-spacing: 0.0125em;
+  padding: 12px 24px 10px;
+}
+#modal p {
+  color: rgba(0, 0, 0, 0.6);
+  line-height: 1.5rem;
+  letter-spacing: 0.03125em;
+  padding: 0 24px 20px;
+  font-weight: 400;
+}
+#modal footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px;
+  flex-direction: row-reverse;
+}
+#modal footer button {
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.0892857143em;
+  text-transform: uppercase;
+  padding: 0 8px;
+  border-radius: 4px;
+  border: none;
+  outline: none;
+  line-height: 2.25rem;
+  color: #0080ff;
+  background: transparent;
+}
+#modal footer button:hover {
+  background: rgba(0, 128, 255, 0.0784313725);
+  transition: all 0.3s ease;
+}
+#modal footer button:active:focus {
+  background: rgba(0, 128, 255, 0.2509803922);
+}
+
+#modal.close {
+  transform: translate(-50%, calc(-50% - 50px));
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0.15s, opacity 0.15s linear, transform 0.3s ease-out;
+}
+
+.modal-backdrop,
+.overlay {
+  background: #000;
+  height: 100%;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  transition: visibility 0.15s 0.2s, opacity 0.15s linear 0.2s;
+  visibility: hidden;
+  width: 100%;
+  z-index: 80;
+}
+
+.overlay {
+  z-index: 50;
+}
+
+.modal-backdrop.fade-in,
+.overlay.fade-in {
+  opacity: 0.5;
+  transition: visibility 0s, opacity 0.15s linear;
+  visibility: visible;
+}
+
+/**
+ * ----------------------------------------
+ * animation slide-in-top
+ * ----------------------------------------
+ */
+.slide-in-top {
+  animation: slide-in-top 0.6s ease;
+}
+
+@keyframes slide-in-top {
+  0% {
+    transform: translateY(-19px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+/**
+ * ----------------------------------------
+ * animation slide-out-top
+ * ----------------------------------------
+ */
+.slide-out-top {
+  animation: slide-out-top 0.6s ease;
+}
+
+@keyframes slide-out-top {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-19px);
+    opacity: 0;
+  }
+}
+/**
+ * ----------------------------------------
+ * animation show
+ * ----------------------------------------
+ */
+@keyframes show {
+  0% {
+    height: 5px;
+  }
+  100% {
+    height: 24px;
+  }
+}
+/**
+ * ----------------------------------------
+ * animation hide
+ * ----------------------------------------
+ */
+@keyframes hide {
+  0% {
+    height: 24px;
+  }
+  100% {
+    height: 0;
+  }
+}
+
+/*# sourceMappingURL=main.css.map */

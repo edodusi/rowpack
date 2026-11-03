@@ -1,0 +1,24 @@
+{
+  "name": "bundler-sqlite",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "acorn": "^8.18.0",
+    "flatpickr": "^4.6.13",
+    "sql.js": "^1.14.2"
+  },
+  "bin": {
+    "sqlbundle": "./bin/sqlbundle.js"
+  },
+  "scripts": {
+    "test": "node test/bundler.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "jsdom": "^30.0.1"
+  }
+}
