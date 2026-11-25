@@ -1,0 +1,430 @@
+{
+  "date": "2026-11-25T12:26:09.014Z",
+  "machine": {
+    "cpu": "Apple M5 Pro",
+    "cores": 18,
+    "os": "Darwin 25.6.0",
+    "node": "v26.10.0",
+    "label": "darwin-arm64"
+  },
+  "versions": {
+    "esbuild": "0.28.2",
+    "chrome": "158.0.8127.38"
+  },
+  "apps": {
+    "todomvc": {
+      "build": {
+        "rowpack_sqlite_ms": 31.12691699999999,
+        "rowpack_sqlite_plus_js_ms": 33.652333,
+        "esbuild_ms": 13.893665999999996,
+        "rowpack_jobs8_sqlite_ms": 66.20720800000004,
+        "rowpack_phases_ms": {
+          "parse": 20.30766600000004,
+          "insert": 3.77537499999994,
+          "linkAndShake": 2.775959000000057,
+          "write": 2.264165999999932,
+          "total": 29.12316599999997
+        },
+        "modules": 53,
+        "modules_before_shaking": 53,
+        "statements": 80,
+        "statements_before_shaking": 81,
+        "cold_cli_rowpack_ms": 104.3053339999999,
+        "cold_cli_esbuild_ms": 22.7818749999999,
+        "prototype_ms": 161.65,
+        "prototype_error": null
+      },
+      "size": {
+        "prototype_sqlite": 8396800,
+        "prototype_js": {
+          "raw": 1058541,
+          "gzip": 353575,
+          "brotli": 311943
+        },
+        "sqlite": 1245184,
+        "sqlite_stripped": 851968,
+        "rowpack_static": {
+          "raw": 811393,
+          "gzip": 288385,
+          "brotli": 260701
+        },
+        "rowpack_static_minified": {
+          "raw": 640969,
+          "gzip": 270727,
+          "brotli": 248870
+        },
+        "rowpack_dynamic": {
+          "raw": 828689,
+          "gzip": 293173,
+          "brotli": 263774
+        },
+        "rowpack_dynamic_minified": {
+          "raw": 656434,
+          "gzip": 274315,
+          "brotli": 250970
+        },
+        "esbuild": {
+          "raw": 772446,
+          "gzip": 279753,
+          "brotli": 253585
+        },
+        "esbuild_minified": {
+          "raw": 623851,
+          "gzip": 268048,
+          "brotli": 246361
+        },
+        "page_esbuild": {
+          "raw": 772771,
+          "gzip": 278993,
+          "brotli": 255395
+        },
+        "page_static": {
+          "raw": 811779,
+          "gzip": 288598,
+          "brotli": 260956
+        },
+        "page_dynamic": {
+          "raw": 829075,
+          "gzip": 293438,
+          "brotli": 264218
+        },
+        "page_sql": {
+          "raw": 2125042,
+          "gzip": 823501,
+          "brotli": 695428
+        }
+      },
+      "browser": {
+        "esbuild": {
+          "ready_at_ms": 22.599999994039536,
+          "script_ms": 13.200000002980232,
+          "load_event_ms": 25.899999991059303
+        },
+        "esbuild_cpu4x": {
+          "ready_at_ms": 93.15000000596046,
+          "script_ms": 53.150000005960464,
+          "load_event_ms": 107.95000000298023
+        },
+        "static": {
+          "ready_at_ms": 24.799999997019768,
+          "script_ms": 14,
+          "load_event_ms": 28.400000005960464
+        },
+        "static_cpu4x": {
+          "ready_at_ms": 101.04999999701977,
+          "script_ms": 55.69999999552965,
+          "load_event_ms": 116.25
+        },
+        "dynamic": {
+          "ready_at_ms": 26.100000008940697,
+          "script_ms": 15.899999991059303,
+          "load_event_ms": 29.700000002980232
+        },
+        "dynamic_cpu4x": {
+          "ready_at_ms": 108.5,
+          "script_ms": 67.05000000447035,
+          "load_event_ms": 124.09999999403954
+        },
+        "sql": {
+          "ready_at_ms": 62.79999999701977,
+          "script_ms": 48.69999998807907,
+          "load_event_ms": 18.400000005960464,
+          "sqlite_ready_ms": 21.19999998807907,
+          "link_and_run_ms": 28,
+          "query_ms": 2.7999999970197678,
+          "compile_ms": 1.7000000029802322
+        },
+        "sql_cpu4x": {
+          "ready_at_ms": 247.85000000149012,
+          "script_ms": 191.79999999701977,
+          "load_event_ms": 82.3500000089407,
+          "sqlite_ready_ms": 88.6499999910593,
+          "link_and_run_ms": 104.10000000149012,
+          "query_ms": 11.200000002980232,
+          "compile_ms": 6.600000001490116
+        }
+      },
+      "node": {}
+    },
+    "lodash-few": {
+      "build": {
+        "rowpack_sqlite_ms": 142.13791599999968,
+        "rowpack_sqlite_plus_js_ms": 145.73745699999563,
+        "esbuild_ms": 67.68445799999608,
+        "rowpack_jobs8_sqlite_ms": 103.00645899999654,
+        "rowpack_phases_ms": {
+          "parse": 68.28800000000047,
+          "insert": 28.46558399999776,
+          "linkAndShake": 14.338332999999693,
+          "write": 1.8618330000026617,
+          "total": 112.95375000000058
+        },
+        "modules": 157,
+        "modules_before_shaking": 641,
+        "statements": 456,
+        "statements_before_shaking": 1927,
+        "cold_cli_rowpack_ms": 196.86466700000165,
+        "cold_cli_esbuild_ms": 72.97645800000464,
+        "prototype_ms": 2440.86,
+        "prototype_error": null
+      },
+      "size": {
+        "prototype_sqlite": 8929280,
+        "prototype_js": {
+          "raw": 1163045,
+          "gzip": 168345,
+          "brotli": 108780
+        },
+        "sqlite": 499712,
+        "sqlite_stripped": 241664,
+        "rowpack_static": {
+          "raw": 70579,
+          "gzip": 16215,
+          "brotli": 14020
+        },
+        "rowpack_static_minified": {
+          "raw": 25013,
+          "gzip": 9704,
+          "brotli": 8505
+        },
+        "rowpack_dynamic": {
+          "raw": 117374,
+          "gzip": 21211,
+          "brotli": 17664
+        },
+        "rowpack_dynamic_minified": {
+          "raw": 63081,
+          "gzip": 14841,
+          "brotli": 12744
+        },
+        "esbuild": {
+          "raw": 71311,
+          "gzip": 15139,
+          "brotli": 13093
+        },
+        "esbuild_minified": {
+          "raw": 25111,
+          "gzip": 9924,
+          "brotli": 8705
+        },
+        "page_esbuild": {
+          "raw": 71636,
+          "gzip": 15363,
+          "brotli": 13196
+        },
+        "page_static": {
+          "raw": 70965,
+          "gzip": 16467,
+          "brotli": 14151
+        },
+        "page_dynamic": {
+          "raw": 117760,
+          "gzip": 21460,
+          "brotli": 17813
+        },
+        "page_sql": {
+          "raw": 1311302,
+          "gzip": 507888,
+          "brotli": 418761
+        }
+      },
+      "browser": {
+        "esbuild": {
+          "ready_at_ms": 8.300000011920929,
+          "script_ms": 2.5,
+          "load_event_ms": 8.5
+        },
+        "esbuild_cpu4x": {
+          "ready_at_ms": 33.75,
+          "script_ms": 12.050000004470348,
+          "load_event_ms": 35.20000000298023
+        },
+        "static": {
+          "ready_at_ms": 7.9000000059604645,
+          "script_ms": 2.7999999970197678,
+          "load_event_ms": 8.099999994039536
+        },
+        "static_cpu4x": {
+          "ready_at_ms": 34.54999999701977,
+          "script_ms": 13.349999994039536,
+          "load_event_ms": 36.150000005960464
+        },
+        "dynamic": {
+          "ready_at_ms": 10.5,
+          "script_ms": 4.700000002980232,
+          "load_event_ms": 10.600000008940697
+        },
+        "dynamic_cpu4x": {
+          "ready_at_ms": 44.69999999552965,
+          "script_ms": 22,
+          "load_event_ms": 46.149999998509884
+        },
+        "sql": {
+          "ready_at_ms": 38.80000001192093,
+          "script_ms": 27.299999997019768,
+          "load_event_ms": 15.100000008940697,
+          "sqlite_ready_ms": 13.599999994039536,
+          "link_and_run_ms": 13.600000008940697,
+          "query_ms": 2.800000011920929,
+          "compile_ms": 1.0999999940395355
+        },
+        "sql_cpu4x": {
+          "ready_at_ms": 177.00000000745058,
+          "script_ms": 130.7000000104308,
+          "load_event_ms": 72.69999999552965,
+          "sqlite_ready_ms": 75.30000000447035,
+          "link_and_run_ms": 55.400000005960464,
+          "query_ms": 12,
+          "compile_ms": 4.300000004470348
+        }
+      },
+      "node": {
+        "sql_engine_ms": 1.1275415000018256,
+        "sql_queries": 1,
+        "static_ms": 0.21747949999553384,
+        "dynamic_ms": 0.49314550000053714,
+        "esbuild_ms": 0.20654150000336813
+      }
+    },
+    "lodash-all": {
+      "build": {
+        "rowpack_sqlite_ms": 133.99379200000112,
+        "rowpack_sqlite_plus_js_ms": 148.46416700000555,
+        "esbuild_ms": 62.25729199999478,
+        "rowpack_jobs8_sqlite_ms": 108.58599999999569,
+        "rowpack_phases_ms": {
+          "parse": 85.20716700000048,
+          "insert": 28.340041999996174,
+          "linkAndShake": 19.96745799999917,
+          "write": 3.718332999997074,
+          "total": 137.2329999999929
+        },
+        "modules": 641,
+        "modules_before_shaking": 641,
+        "statements": 1921,
+        "statements_before_shaking": 1921,
+        "cold_cli_rowpack_ms": 210.16575000000012,
+        "cold_cli_esbuild_ms": 71.94533400000364,
+        "prototype_ms": 2397.75,
+        "prototype_error": null
+      },
+      "size": {
+        "prototype_sqlite": 8929280,
+        "prototype_js": {
+          "raw": 1162685,
+          "gzip": 168245,
+          "brotli": 108706
+        },
+        "sqlite": 1765376,
+        "sqlite_stripped": 811008,
+        "rowpack_static": {
+          "raw": 304397,
+          "gzip": 60629,
+          "brotli": 48823
+        },
+        "rowpack_static_minified": {
+          "raw": 104141,
+          "gzip": 36211,
+          "brotli": 31301
+        },
+        "rowpack_dynamic": {
+          "raw": 509718,
+          "gzip": 81846,
+          "brotli": 56708
+        },
+        "rowpack_dynamic_minified": {
+          "raw": 281755,
+          "gzip": 59413,
+          "brotli": 43025
+        },
+        "esbuild": {
+          "raw": 302771,
+          "gzip": 56852,
+          "brotli": 45334
+        },
+        "esbuild_minified": {
+          "raw": 97999,
+          "gzip": 36062,
+          "brotli": 30919
+        },
+        "page_esbuild": {
+          "raw": 303096,
+          "gzip": 57083,
+          "brotli": 45486
+        },
+        "page_static": {
+          "raw": 304783,
+          "gzip": 60867,
+          "brotli": 48959
+        },
+        "page_dynamic": {
+          "raw": 510104,
+          "gzip": 82121,
+          "brotli": 56874
+        },
+        "page_sql": {
+          "raw": 2070426,
+          "gzip": 669991,
+          "brotli": 527906
+        }
+      },
+      "browser": {
+        "esbuild": {
+          "ready_at_ms": 15.299999997019768,
+          "script_ms": 7.700000002980232,
+          "load_event_ms": 15.700000002980232
+        },
+        "esbuild_cpu4x": {
+          "ready_at_ms": 67.49999999254942,
+          "script_ms": 34.099999994039536,
+          "load_event_ms": 68.8999999910593
+        },
+        "static": {
+          "ready_at_ms": 17.299999997019768,
+          "script_ms": 8.799999997019768,
+          "load_event_ms": 17.69999998807907
+        },
+        "static_cpu4x": {
+          "ready_at_ms": 71.94999999552965,
+          "script_ms": 38.899999998509884,
+          "load_event_ms": 73
+        },
+        "dynamic": {
+          "ready_at_ms": 26.80000001192093,
+          "script_ms": 16.200000002980232,
+          "load_event_ms": 27.299999997019768
+        },
+        "dynamic_cpu4x": {
+          "ready_at_ms": 112.09999999403954,
+          "script_ms": 68.89999999850988,
+          "load_event_ms": 113.59999999403954
+        },
+        "sql": {
+          "ready_at_ms": 57.8999999910593,
+          "script_ms": 45,
+          "load_event_ms": 17.700000002980232,
+          "sqlite_ready_ms": 21.399999991059303,
+          "link_and_run_ms": 24,
+          "query_ms": 6.399999991059303,
+          "compile_ms": 3
+        },
+        "sql_cpu4x": {
+          "ready_at_ms": 243.94999999552965,
+          "script_ms": 188.19999999552965,
+          "load_event_ms": 82.70000000298023,
+          "sqlite_ready_ms": 93.6499999910593,
+          "link_and_run_ms": 94.29999999701977,
+          "query_ms": 25.200000002980232,
+          "compile_ms": 11.149999998509884
+        }
+      },
+      "node": {
+        "sql_engine_ms": 3.3965414999984205,
+        "sql_queries": 1,
+        "static_ms": 0.8027494999987539,
+        "dynamic_ms": 1.7271459999974468,
+        "esbuild_ms": 0.8191044999985024
+      }
+    }
+  }
+}

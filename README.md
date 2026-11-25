@@ -43,7 +43,7 @@ sqlite3 hello.sqlite "SELECT * FROM ldd"      # or just look inside
 The tests compare against Node's own ESM loader: live bindings, cycles, TDZ errors, `export *` conflicts, default export forms, evaluation order, shadowing, `import()`, namespace objects, string export names and JSON imports. Every fixture runs through the SQL engine, the static script and the dynamic script, with and without tree-shaking. TodoMVC Vanilla ES6 renders and behaves identically in headless Chrome whether esbuild or rowpack built it.
 
 ```sh
-npm test                          # 146 tests
+npm test                          # 149 tests
 node demos/todomvc/prepare.js     # fetches TodoMVC (GPL-3.0, not vendored) for the browser test
 ```
 
@@ -62,7 +62,9 @@ Apple M5 Pro, Node 26, esbuild 0.28, Chrome 156. Medians. Full report in [`bench
 | Chrome app ready, rowpack static | 29 ms | 9 ms | 21 ms |
 | Chrome app ready, rowpack SQL engine | 63 ms | 40 ms | 59 ms |
 
-Minified sizes use esbuild's minifier on both outputs, so the comparison is about bundling, not minification. TodoMVC's output is mostly a WAV file and SVGs. The SQL engine page also ships 685 KB of SQLite compiled to WebAssembly, which takes 14 to 19 ms to start before any module is linked.
+Minified sizes use esbuild's minifier on both outputs, so the comparison is about bundling, not minification. TodoMVC's output is mostly a WAV file and SVGs. The SQL engine page also ships 688 KB of SQLite compiled to WebAssembly (sql.js 1.17), which takes 13 to 21 ms to start before any module is linked.
+
+A rerun on 2026-11-25, after a dependency update (sql.js 1.17, Chrome 158), is in [`bench/results`](bench/results/) too. Sizes are identical, build times stay within run-to-run noise, and Chrome's app-ready times for the esbuild and static pages are 2 to 4 ms lower, so the table above still holds.
 
 What this says: as a database, the bundle is a nice thing to query and a slow thing to boot. Linked statically, it is roughly as small and as fast as esbuild's output, and esbuild still builds about twice as fast.
 
